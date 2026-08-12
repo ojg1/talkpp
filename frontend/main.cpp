@@ -68,6 +68,7 @@ int main(){
     HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
     INPUT_RECORD record;
     DWORD eventsRead;
+    DWORD gnofieRead;
 
     DWORD mode;
     GetConsoleMode(hOut, &mode);
@@ -80,41 +81,57 @@ int main(){
 
     std::cout << "Starting..." << std::endl;
 
+    std::string connPoint = "hb930.duckdns.org:930";
     auto dura = std::chrono::seconds(30);
-
-    bool run = true;
-    
     std::string kinp = "";
+    int64_t frames = 0;
+    auto programStart = std::chrono::steady_clock::now();
+    bool run = true;
 
     //main loop
     while (run) {
 
         auto start = std::chrono::steady_clock::now();
 
-        //Render start
-        
-        bool success = ReadConsoleInput(
-            hIn,
-            &record,
-            1,
-            &eventsRead
-        );
+        frames++;
 
-        if (success) {
-            if (record.Event.KeyEvent.bKeyDown) {
-                kinp += static_cast<char>(record.Event.KeyEvent.uChar.UnicodeChar);
-            };
+        //Render start
+
+        bool success = GetNumberOfConsoleInputEvents(hIn, &gnofieRead);
+
+        if (success) {    
+            if (gnofieRead > 0) {
+                bool success2 = ReadConsoleInput(
+                    hIn,
+                    &record,
+                    1,
+                    &eventsRead
+                );
+
+                if (success2) {
+                    if (record.Event.KeyEvent.bKeyDown) {
+                        kinp += static_cast<char>(record.Event.KeyEvent.uChar.UnicodeChar);
+                    };
+                };
+        
+            }
         };
+
 
         std::cout << "\033[2J\033[3J\033[H";
         std::cout << "\033[?25l";
         renderGUI(msg, kinp);
 
+        auto elapsedProgram = std::chrono::steady_clock::now() - programStart;
+
+        std::cout << "Frames: " << frames << "\n";
+        std::cout << "Frames per second: " << frames/std::chrono::duration<double>(elapsedProgram).count() << "\n";
+
         //Render end
         auto end = std::chrono::steady_clock::now();
 
         auto elapsed = end - start;
-        auto target = std::chrono::duration<double, std::milli>(16.666);
+        auto target = std::chrono::duration<double, std::milli>(12);
 
         if (elapsed < target) {
             std::this_thread::sleep_for(target-elapsed);
