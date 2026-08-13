@@ -34,11 +34,11 @@ int main(){
 
     auto bindStatus = bind(talkSocket, (SOCKADDR*)&SocketAddress, sizeof(SocketAddress));
 
-    if (bindStatus == SOCKET_ERROR) {std::cout << "An error occured while binding. Error code: " << bindStatus << "\n";};      
+    if (bindStatus == SOCKET_ERROR) {std::cout << "An error occured while binding. Error: " << WSAGetLastError() << "\n";};      
 
     auto listenStatus = listen(talkSocket, 10);
 
-    if (listenStatus == SOCKET_ERROR) {std::cout << "An error occured while listening. Error code: " << listenStatus << "\n";};
+    if (listenStatus == SOCKET_ERROR) {std::cout << "An error occured while listening. Error: " << WSAGetLastError() << "\n";};
 
     std::vector<SOCKET> Clients = {};
 
@@ -49,17 +49,51 @@ int main(){
     while (runServer) {
 
         SOCKET clientSocket = accept(talkSocket, nullptr, nullptr);
-        if (clientSocket == INVALID_SOCKET && WSAGetLastError() == WSAEWOULDBLOCK) {
-            //no client, continue
+        if (clientSocket == INVALID_SOCKET) {
+            if (WSAGetLastError() != WSAEWOULDBLOCK) {
+                std::cout << "Client socket is invalid.\n";
+            };
         } else {
             Clients.push_back(clientSocket);
         };
 
         for (const auto& sock : Clients) {
-            
+            char clirecvbuffer[1024];
+            bool cliDisconnected = false;
+            int occupiedBytes = 0;
+
+            while (occupiedBytes < 2) {            
+                int clirecv = recv(talkSocket, clirecvbuffer + occupiedBytes, 1024, 0);
+                if (clirecv == 0 || clirecv == SOCKET_ERROR) {
+                    std::cout << "Client Disconnected or encountered an error.\n";
+                    cliDisconnected = true;
+                    break;
+                };
+                occupiedBytes = occupiedBytes + clirecv;
+            };
+
+            if (cliDisconnected) {
+                break;
+            };
+
+            //set byte buffer
+            uint16_t length;
+            memcpy(&length, clirecvbuffer, sizeof(length));
+
+            while (occupiedBytes < length) {            
+                int clirecv = recv(talkSocket, clirecvbuffer + occupiedBytes, 1024, 0);
+                if (clirecv == 0 || clirecv == SOCKET_ERROR) {
+                    std::cout << "Client Disconnected or encountered an error.\n";
+                    cliDisconnected = true;
+                    break;
+                };
+                occupiedBytes = occupiedBytes + clirecv;
+            };
+
+            if (cliDisconnected) {
+                break;
+            };
         };
-
-
     };
 
 
