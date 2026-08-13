@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <unordered_map>
 
 int main(){
@@ -57,7 +58,11 @@ int main(){
             Clients.push_back(clientSocket);
         };
 
+        SOCKET disconnectCli;
+
+        // const auto& a : b in which a can not be modified during the loop
         for (const auto& sock : Clients) {
+
             char clirecvbuffer[1024];
             bool cliDisconnected = false;
             int occupiedBytes = 0;
@@ -73,7 +78,8 @@ int main(){
             };
 
             if (cliDisconnected) {
-                break;
+                disconnectCli = sock;
+                continue;
             };
 
             //set byte buffer
@@ -91,11 +97,30 @@ int main(){
             };
 
             if (cliDisconnected) {
-                break;
+                disconnectCli = sock;
+                continue;
             };
-        };
-    };
 
+            //if data sent from client applicable then send all clients
+
+            std::string clientMessage(clirecvbuffer+2, occupiedBytes-2);
+
+            for (const auto& sock : Clients) {
+
+                
+
+            };
+
+        };
+
+        if (disconnectCli) {
+            Clients.erase(
+                std::remove(Clients.begin(), Clients.end(), disconnectCli),
+                Clients.end()
+            );
+        };
+        
+    };
 
     WSACleanup();
 
