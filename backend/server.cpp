@@ -47,6 +47,7 @@ int main(){
     ioctlsocket(talkSocket, FIONBIO, &blockingIdentifier);
 
     bool runServer = true;
+    std::cout << "Server is running!\n";
     while (runServer) {
 
         SOCKET clientSocket = accept(talkSocket, nullptr, nullptr);
@@ -68,7 +69,7 @@ int main(){
             int occupiedBytes = 0;
 
             while (occupiedBytes < 2) {            
-                int clirecv = recv(talkSocket, clirecvbuffer + occupiedBytes, 1024, 0);
+                int clirecv = recv(sock, clirecvbuffer + occupiedBytes, 1024, 0);
                 if (clirecv == 0 || clirecv == SOCKET_ERROR) {
                     std::cout << "Client Disconnected or encountered an error.\n";
                     cliDisconnected = true;
@@ -86,8 +87,8 @@ int main(){
             uint16_t length;
             memcpy(&length, clirecvbuffer, sizeof(length));
 
-            while (occupiedBytes < length) {            
-                int clirecv = recv(talkSocket, clirecvbuffer + occupiedBytes, 1024, 0);
+            while (occupiedBytes < length+2) {            
+                int clirecv = recv(sock, clirecvbuffer + occupiedBytes, 1024, 0);
                 if (clirecv == 0 || clirecv == SOCKET_ERROR) {
                     std::cout << "Client Disconnected or encountered an error.\n";
                     cliDisconnected = true;
@@ -105,10 +106,23 @@ int main(){
 
             std::string clientMessage(clirecvbuffer+2, occupiedBytes-2);
 
-            for (const auto& sock : Clients) {
+            for (const auto& subsock : Clients) {
+                int bytesSent = 0;
+                bool error = false;
 
+                while (bytesSent < occupiedBytes) {
+                    auto sendCli = send(subsock, clirecvbuffer+bytesSent, (occupiedBytes-2)-bytesSent, 0);
+                    if (sendCli == SOCKET_ERROR) {
+                        error = true;
+                        break;
+                    };
+                    bytesSent = bytesSent + sendCli;
+                };
+
+                if (error) {
+                    continue;
+                };
                 
-
             };
 
         };
