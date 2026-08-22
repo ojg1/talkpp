@@ -2,10 +2,12 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <windows.h>
+#include <conio.h>
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
+#include "serverNetwork.hpp"
 
 int main(){
 
@@ -50,84 +52,59 @@ int main(){
     std::cout << "Server is running!\n";
     while (runServer) {
 
+        // if (_kbhit()) {
+        //     char key = _getch();
+
+        //     if (key == 'q') {
+        //         runServer = false;
+        //     }
+        // }
+
         SOCKET clientSocket = accept(talkSocket, nullptr, nullptr);
+       
         if (clientSocket == INVALID_SOCKET) {
             if (WSAGetLastError() != WSAEWOULDBLOCK) {
-                std::cout << "Client socket is invalid.\n";
+                std::cout << "Client socket is invalid. Error code:" << WSAGetLastError() << "\n";
             };
         } else {
+            std::cout << "------NEWSOCKET------\n";
+            int socketError = 0;
+            int optLen = sizeof(socketError);
+
+            int result = getsockopt(clientSocket, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&socketError), &optLen);
+
+            if (result == SOCKET_ERROR) {
+                std::cout << "getsockopt failed: "
+                        << WSAGetLastError() << "\n";
+            } else {
+                std::cout << "Socket SO_ERROR: " << socketError << "\n";
+            }
+
             Clients.push_back(clientSocket);
+            std::cout << "accepted client: " << clientSocket << "\n";
         };
 
-        SOCKET disconnectCli;
+        SOCKET disconnectCli = INVALID_SOCKET;
 
         // const auto& a : b in which a can not be modified during the loop
         for (const auto& sock : Clients) {
 
-            char clirecvbuffer[1024];
-            bool cliDisconnected = false;
-            int occupiedBytes = 0;
+            TalkServerNetwork TSNet;
 
-            while (occupiedBytes < 2) {            
-                int clirecv = recv(sock, clirecvbuffer + occupiedBytes, 1024, 0);
-                if (clirecv == 0 || clirecv == SOCKET_ERROR) {
-                    std::cout << "Client Disconnected or encountered an error.\n";
-                    cliDisconnected = true;
-                    break;
-                };
-                occupiedBytes = occupiedBytes + clirecv;
-            };
-
-            if (cliDisconnected) {
-                disconnectCli = sock;
-                continue;
-            };
-
-            //set byte buffer
-            uint16_t length;
-            memcpy(&length, clirecvbuffer, sizeof(length));
-
-            while (occupiedBytes < length+2) {            
-                int clirecv = recv(sock, clirecvbuffer + occupiedBytes, 1024, 0);
-                if (clirecv == 0 || clirecv == SOCKET_ERROR) {
-                    std::cout << "Client Disconnected or encountered an error.\n";
-                    cliDisconnected = true;
-                    break;
-                };
-                occupiedBytes = occupiedBytes + clirecv;
-            };
-
-            if (cliDisconnected) {
-                disconnectCli = sock;
-                continue;
-            };
-
-            //if data sent from client applicable then send all clients
-
-            std::string clientMessage(clirecvbuffer+2, occupiedBytes-2);
-
-            for (const auto& subsock : Clients) {
-                int bytesSent = 0;
-                bool error = false;
-
-                while (bytesSent < occupiedBytes) {
-                    auto sendCli = send(subsock, clirecvbuffer+bytesSent, (occupiedBytes-2)-bytesSent, 0);
-                    if (sendCli == SOCKET_ERROR) {
-                        error = true;
-                        break;
-                    };
-                    bytesSent = bytesSent + sendCli;
-                };
-
-                if (error) {
+            //Recieve string
+            std::string ReceiveResult = TSNet.RecieveClientNetworkData(&sock, &Clients, &disconnectCli);
+            std::cout << ReceiveResult << std::endl;
+            //Send string to rest of clients
+            for (const auto& subSock : Clients) {
+                if (subSock == sock) {
                     continue;
-                };
-                
-            };
-
+                } else {
+                    std::string SendResult = TSNet.SendClientNetworkData(&subSock,  ReceiveResult);
+                }            
+            }
         };
 
-        if (disconnectCli) {
+        if (disconnectCli != INVALID_SOCKET) {
             Clients.erase(
                 std::remove(Clients.begin(), Clients.end(), disconnectCli),
                 Clients.end()

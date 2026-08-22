@@ -8,7 +8,7 @@
 
 class TalkServerNetwork{
     public:
-        std::string RecieveClientNetworkData(SOCKET* ClientSocket,  std::vector<SOCKET>* ClientsVector);
-        std::string SendClientNetworkData(SOCKET* ClientSocket, std::string StringToSend);
+        std::string RecieveClientNetworkData(const SOCKET* ClientSocket,  std::vector<SOCKET>* ClientsVector, SOCKET* disconnectClient);
+        std::string SendClientNetworkData(const SOCKET* ClientSocket, std::string StringToSend);
 
 };
