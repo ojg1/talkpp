@@ -100,7 +100,7 @@ int main(int argc, char* argv[]) {
         } else if (buildchoice == "backend") {
             backendBuildCount++;
 
-            std::string TotalStringCommand = "g++ -std=c++23 -Wall -O2"
+            std::string TotalStringCommand = "g++ -std=c++23 -Wall -O2 "
             +buildDirectory+"backend/server.cpp "
             +buildDirectory+"backend/serverNetwork.cpp "
             +" -lws2_32"
