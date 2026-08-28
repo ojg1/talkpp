@@ -30,6 +30,19 @@ using std::string;
 using std::vector;
 using std::unordered_map;
 
+//util
+void plog(string ansi, string header, string message){
+    std::cout << ansi << "[" << header << "]\x1b0m" << message << "\x1b[0m\n";
+};
+
+struct cbckd {
+    Fl_Input* TextBox;
+    SOCKET* ClientSocket;
+};
+//plog("\x1b[0;38;5;10;49m", "stuff", "stuff did something");
+//output:
+//[stuff] stuff did something
+
 //Functions
 string RecieveData(SOCKET *Client) {
     std::string result;
@@ -66,12 +79,44 @@ string RecieveData(SOCKET *Client) {
     return result;
 };
 
-string SendData(){
+//https://learn.microsoft.com/en-us/windows/win32/winsock/sending-and-receiving-data-on-the-client
+string SendData(SOCKET* ClientSocket, string message){
+       
+    char messageBuffer[message.length()];
+
+    int occBytes = 0;
+    bool err = false;
+   
+    while (occBytes < message.length()) {
+        int bytesSent = send(*ClientSocket, messageBuffer, message.length(), 0);
+        int error = WSAGetLastError();
+
+        if (bytesSent == SOCKET_ERROR || bytesSent == -1) {
+            std::cout << "An error occured:" << error << "\n";
+            err = true;
+            break;
+        };
+        occBytes += bytesSent;
+    };
+
+
+    if (err) {
+        return "success";
+    } else {
+        return "failure";
+    }
 
     return;
 };
 
-int networkThread(){
+void SendDataCallback(Fl_Widget* widget, void* data) {
+
+    cbckd* callback = static_cast<cbckd*>(data);
+
+    SendData(callback->ClientSocket, callback->TextBox->value());
+};
+
+int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox){
 
     WSADATA wsadata;
     int StartupStatus = WSAStartup(MAKEWORD(2,2), &wsadata);
@@ -104,7 +149,6 @@ int networkThread(){
     TalkSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 
     int conn = connect(TalkSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-
     if (conn == SOCKET_ERROR) {
         closesocket(TalkSocket);
         TalkSocket = INVALID_SOCKET;
@@ -118,8 +162,15 @@ int networkThread(){
         return -1;
     };
 
-    while (true) {
+    cbckd* cl = new cbckd{
+        TextBox,
+        &TalkSocket
+    };
 
+    SendButton->callback(SendDataCallback, cl);
+
+    while (true) {
+        RecieveData(&TalkSocket);
     };
 
     WSACleanup();
@@ -129,7 +180,6 @@ int networkThread(){
 
 int main(int argc, char** argv) {
 
-    std::thread talknet(networkThread);
 
     Fl_Window *TalkFLTKWindow = new Fl_Window(800,500);
 
@@ -153,15 +203,14 @@ int main(int argc, char** argv) {
         Fl_Input* TextBox = new Fl_Input(MainChat->x()+10,MainChat->y()+415, 370, 25);
         TextBox->placeholder("Type your message here...");
         TextBox->box(FL_PLASTIC_UP_BOX);
+        
 
         Fl_Return_Button* TextBoxSend = new Fl_Return_Button(MainChat->x()+390, MainChat->y()+415, 100, 25, "Send");
         TextBoxSend->box(FL_PLASTIC_UP_BOX);
 
         Fl_Scroll* TextBoxText = new Fl_Scroll(MainChat->x()+10,MainChat->y()+10, 480, 400);
         TextBoxText->box(FL_PLASTIC_UP_BOX);
-
     MainChat->end();    
-
 
     Fl_Box *notifier = new Fl_Box(0, 0, 60, 20,"Talk++");
     notifier->box(FL_FLAT_BOX);
@@ -173,6 +222,8 @@ int main(int argc, char** argv) {
 
     TalkFLTKWindow->end();
     TalkFLTKWindow->show(argc, argv);
+
+    std::thread talknet(networkThread, TextBoxSend, TextBox);
 
     Fl::run();
 

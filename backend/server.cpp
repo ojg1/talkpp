@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <unordered_map>
 #include "serverNetwork.hpp"
+#include "quickutils.hpp" 
 
 int main(){
 
@@ -17,6 +18,8 @@ int main(){
     freopen_s(&NewConsole, "CONOUT$", "w", stdout);
     freopen_s(&NewConsole, "CONOUT$", "w", stderr);
     freopen_s(&NewConsole, "CONIN$", "r", stdin);
+
+    qu s;
 
     std::cout << "Server Starting\n";
     
@@ -49,32 +52,33 @@ int main(){
     ioctlsocket(talkSocket, FIONBIO, &blockingIdentifier);
 
     bool runServer = true;
-    std::cout << "Server is running!\n";
+    std::cout << "\x1b[0;38;5;10;49m[servertpp]\x1b[0m Server is running!\n";
     while (runServer) {
  
 
         SOCKET clientSocket = accept(talkSocket, nullptr, nullptr);
        
         if (clientSocket == INVALID_SOCKET) {
-            if (WSAGetLastError() != WSAEWOULDBLOCK) {
-                std::cout << "Client socket is invalid. Error code:" << WSAGetLastError() << "\n";
+            int erracc = WSAGetLastError();
+
+            if (erracc != WSAEWOULDBLOCK) {
+                s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "An error occured while accepting a client. Error Code: " + erracc);
             };
         } else {
-            std::cout << "------NEWSOCKET------\n";
+            s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Validating client...");
             int socketError = 0;
             int optLen = sizeof(socketError);
 
             int result = getsockopt(clientSocket, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&socketError), &optLen);
 
             if (result == SOCKET_ERROR) {
-                std::cout << "getsockopt failed: "
-                        << WSAGetLastError() << "\n";
+                s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "getsockopt() failed. Error Code: " + std::to_string(WSAGetLastError()) + "\n");
             } else {
-                std::cout << "Socket SO_ERROR: " << socketError << "\n";
+                s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "socket error Error Code: " + std::to_string(socketError) + "\n");
             }
 
             Clients.push_back(clientSocket);
-            std::cout << "accepted client: " << clientSocket << "\n";
+            s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "\x1b[1;3;38;5;46;49mconnection success\n");
         };
 
         SOCKET disconnectCli = INVALID_SOCKET;
@@ -87,6 +91,7 @@ int main(){
             //Recieve string
             std::string ReceiveResult = TSNet.RecieveClientNetworkData(&sock, &Clients, &disconnectCli);
             std::cout << ReceiveResult << std::endl;
+            
             //Send string to rest of clients
             for (const auto& subSock : Clients) {
                 if (subSock == sock) {

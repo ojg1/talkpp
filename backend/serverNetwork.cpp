@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <WS2tcpip.h>
 #include "serverNetwork.hpp"
+#include "quickutils.hpp"
 
 /*
 1st recv loop recv(*ClientSocket, TalkBuffer + occBytes, 2 - occBytes, 0);
@@ -16,7 +17,7 @@ std::string RecieveStep(const SOCKET *ClientSocket, char *Buffer, int Length, bo
     int RecievedBytes = recv(*ClientSocket, Buffer, Length, 0);
     int Error = (RecievedBytes == SOCKET_ERROR) ? WSAGetLastError() : 0;
     // std::cout << "RecievedBytes (recv()): " << RecievedBytes << "\n";
-    std::cout << ". ";
+    std::cout << "";
 
     if (RecievedBytes == SOCKET_ERROR) {
         if (Error == WSAEWOULDBLOCK) {
@@ -52,7 +53,7 @@ void printRawBytes(size_t *occBytes, char *TalkBuffer) {
 std::string TalkServerNetwork::RecieveClientNetworkData(const SOCKET* ClientSocket, std::vector<SOCKET>* ClientsVector, SOCKET* disconnectClient) {
 
     /*
-    Returns a full elligible string safely from a TCP client over a network.
+    Returns a full elligible string safely from a TCP client over a network. 
     */
 
     bool ClientDisconnect = false;
@@ -118,7 +119,7 @@ std::string TalkServerNetwork::SendClientNetworkData(const SOCKET* ClientSocket,
     int occBytes = 0;
     
     while (occBytes < StringToSend.length()) {
-        int SendBytes = send(*ClientSocket, TextMessageBuffer+occBytes, StringToSend.length(), 0);
+        int SendBytes = send(*ClientSocket, TextMessageBuffer+occBytes, StringToSend.length() - occBytes, 0);
         occBytes += SendBytes;
    };
 
