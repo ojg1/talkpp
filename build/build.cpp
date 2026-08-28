@@ -37,6 +37,7 @@ int main(int argc, char* argv[]) {
 
         std::string buildchoice = argv[1];
         std::string buildDirectory = "D:/Projects/TalkProject/Talk++/";
+        std::string gcclib = "C:/gcclib";
         std::string line;
         std::vector<std::string> FileLines = {};
         std::ifstream BuildCount;
@@ -54,7 +55,30 @@ int main(int argc, char* argv[]) {
 
         if (buildchoice == "frontend") {
             frontendBuildCount++;
-            std::string TotalStringCommand = "g++ -std=c++23 -Wall -O2 "+buildDirectory+"frontend/main.exe -o Talk++fe -lws2_32";
+
+            std::string TotalStringCommand = "g++ -std=c++23 -Wall -O2 "
+            +buildDirectory+"frontend/cli.cpp "
+
+            //FLTK Include And Libraries
+            +" -IC:\\gcclibs\\fltk\\include" 
+            +" -LC:\\gcclibs\\fltk\\lib" 
+            // FLTK and Windows Linkers
+            +" -lfltk"
+            +" -lfltk_images"
+            +" -lfltk_png"
+            +" -lfltk_z"
+            +" -lcomctl32" 
+            +" -lgdi32"
+            +" -lgdiplus"
+            +" -lcomdlg32"
+            +" -luser32"
+            +" -lole32"
+            +" -luuid"
+            +" -lwinspool"
+
+            +" -lws2_32" //WinSock2
+            +" -o D:\\Projects\\TalkProject\\talk++\\frontend\\Talk++fe";
+
             printLog("--------------------------------------------------");
             printLog("\x1b[1;38;5;202;49mFrontend Build "+std::to_string(frontendBuildCount));
             printLog("running \x1b[1;38;5;46;49m" + TotalStringCommand);
@@ -75,7 +99,14 @@ int main(int argc, char* argv[]) {
 
         } else if (buildchoice == "backend") {
             backendBuildCount++;
-            std::string TotalStringCommand = "g++ -std=c++23 -Wall -O2 "+buildDirectory+"backend/server.cpp "+buildDirectory+"backend/serverNetwork.cpp -o Talk++be -lws2_32";
+
+            std::string TotalStringCommand = "g++ -std=c++23 -Wall -O2"
+            +buildDirectory+"backend/server.cpp "
+            +buildDirectory+"backend/serverNetwork.cpp "
+            +" -lws2_32"
+            +" -o Talk++be";
+            
+            
             printLog("--------------------------------------------------");
             printLog("\x1b[1;38;5;202;49mBackend Build "+std::to_string(backendBuildCount));
             printLog("running \x1b[1;38;5;46;49m" + TotalStringCommand);

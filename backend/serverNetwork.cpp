@@ -16,6 +16,7 @@ std::string RecieveStep(const SOCKET *ClientSocket, char *Buffer, int Length, bo
     int RecievedBytes = recv(*ClientSocket, Buffer, Length, 0);
     int Error = (RecievedBytes == SOCKET_ERROR) ? WSAGetLastError() : 0;
     // std::cout << "RecievedBytes (recv()): " << RecievedBytes << "\n";
+    std::cout << ". ";
 
     if (RecievedBytes == SOCKET_ERROR) {
         if (Error == WSAEWOULDBLOCK) {
@@ -81,7 +82,7 @@ std::string TalkServerNetwork::RecieveClientNetworkData(const SOCKET* ClientSock
     memcpy(&TalkFrame, TalkBuffer, 2);
     
     TalkFrame = ntohs(TalkFrame);
-    std::cout << TalkFrame << "\n";
+    std::cout << "Frame: " << TalkFrame << "\n";
 
     while (occBytes < TalkFrame) {
         std::string Result = RecieveStep(ClientSocket, TalkBuffer+occBytes, TalkFrame-occBytes, &ClientDisconnect, &occBytes);

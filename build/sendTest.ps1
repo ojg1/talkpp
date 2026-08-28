@@ -1,0 +1,5 @@
+$client = New-Object System.Net.Sockets.TcpClient("127.0.0.1", 930)
+$stream = $client.GetStream()
+$bytes = [byte[]](0x00, 0x0d, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x62, 0x6f, 0x79, 0x39, 0x33, 0x30)
+$stream.Write($bytes, 0, $bytes.Length)
+$stream.Flush()

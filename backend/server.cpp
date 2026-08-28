@@ -51,14 +51,7 @@ int main(){
     bool runServer = true;
     std::cout << "Server is running!\n";
     while (runServer) {
-
-        // if (_kbhit()) {
-        //     char key = _getch();
-
-        //     if (key == 'q') {
-        //         runServer = false;
-        //     }
-        // }
+ 
 
         SOCKET clientSocket = accept(talkSocket, nullptr, nullptr);
        
