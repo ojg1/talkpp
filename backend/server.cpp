@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <unordered_map>
 #include "serverNetwork.hpp"
-#include "quickutils.hpp" 
+// #include "quickutils.hpp" 
 
 int main(){
 
@@ -19,7 +19,7 @@ int main(){
     freopen_s(&NewConsole, "CONOUT$", "w", stderr);
     freopen_s(&NewConsole, "CONIN$", "r", stdin);
 
-    qu s;
+    // qu s;
 
     std::cout << "Server Starting\n";
     
@@ -62,23 +62,23 @@ int main(){
             int erracc = WSAGetLastError();
 
             if (erracc != WSAEWOULDBLOCK) {
-                s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "An error occured while accepting a client. Error Code: " + erracc);
+                // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "An error occured while accepting a client. Error Code: " + erracc);
             };
         } else {
-            s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Validating client...");
+            // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Validating client...");
             int socketError = 0;
             int optLen = sizeof(socketError);
 
             int result = getsockopt(clientSocket, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&socketError), &optLen);
 
             if (result == SOCKET_ERROR) {
-                s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "getsockopt() failed. Error Code: " + std::to_string(WSAGetLastError()) + "\n");
+                // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "getsockopt() failed. Error Code: " + std::to_string(WSAGetLastError()) + "\n");
             } else {
-                s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "socket error Error Code: " + std::to_string(socketError) + "\n");
+                // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "socket error Error Code: " + std::to_string(socketError) + "\n");
             }
 
             Clients.push_back(clientSocket);
-            s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "\x1b[1;3;38;5;46;49mconnection success\n");
+            // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "\x1b[1;3;38;5;46;49mconnection success\n");
         };
 
         SOCKET disconnectCli = INVALID_SOCKET;

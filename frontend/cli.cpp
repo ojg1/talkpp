@@ -32,7 +32,7 @@ using std::unordered_map;
 
 //util
 void plog(string ansi, string header, string message){
-    std::cout << ansi << "[" << header << "]\x1b0m" << message << "\x1b[0m\n";
+    std::cout << ansi << "[" << header << "]\x1b[0m" << message << "\x1b[0m\n";
 };
 
 struct cbckd {
@@ -80,43 +80,54 @@ string RecieveData(SOCKET *Client) {
 };
 
 //https://learn.microsoft.com/en-us/windows/win32/winsock/sending-and-receiving-data-on-the-client
-string SendData(SOCKET* ClientSocket, string message){
-       
-    char messageBuffer[message.length()];
+//PLANNED: use correct framing logic so server can parse it
+string SendData(SOCKET* ClientSocket, string message) {
+
+    int totalLength = message.length() + 2;
+
+    char messageBuffer[totalLength];
+
+    uint16_t length = htons(totalLength);
+    memcpy(messageBuffer, &length, 2);
+
+    memcpy(messageBuffer + 2, message.data(), message.length());
 
     int occBytes = 0;
     bool err = false;
-   
-    while (occBytes < message.length()) {
-        int bytesSent = send(*ClientSocket, messageBuffer, message.length(), 0);
-        int error = WSAGetLastError();
 
-        if (bytesSent == SOCKET_ERROR || bytesSent == -1) {
-            std::cout << "An error occured:" << error << "\n";
+    while (occBytes < totalLength) {
+
+        int bytesSent = send(
+            *ClientSocket,
+            messageBuffer + occBytes,
+            totalLength - occBytes,
+            0
+        );
+
+        if (bytesSent == SOCKET_ERROR) {
+            int error = WSAGetLastError();
+            std::cout << "An error occurred: " << error << "\n";
             err = true;
             break;
-        };
+        }
+
         occBytes += bytesSent;
-    };
-
-
-    if (err) {
-        return "success";
-    } else {
-        return "failure";
     }
 
-    return;
-};
+    if (err) {
+        return "failure";
+    } else {
+        return "success";
+    }
+}
 
 void SendDataCallback(Fl_Widget* widget, void* data) {
-
     cbckd* callback = static_cast<cbckd*>(data);
-
     SendData(callback->ClientSocket, callback->TextBox->value());
 };
 
 int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox){
+    std::cout << "netthread started\n" << std::flush;
 
     WSADATA wsadata;
     int StartupStatus = WSAStartup(MAKEWORD(2,2), &wsadata);
@@ -149,7 +160,10 @@ int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox){
     TalkSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 
     int conn = connect(TalkSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+    int err = WSAGetLastError();
     if (conn == SOCKET_ERROR) {
+        std::cout << "Connection to the server failed\n";
+        std::cout << "Error code: " << std::to_string(err) << "\n";
         closesocket(TalkSocket);
         TalkSocket = INVALID_SOCKET;
     };
@@ -160,6 +174,8 @@ int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox){
         std::cout << "TalkClient: cannot connect to server\n";
         WSACleanup();
         return -1;
+    } else {
+        std::cout << "TalkClient: socket successfully connected\n";
     };
 
     cbckd* cl = new cbckd{
@@ -179,7 +195,6 @@ int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox){
 };
 
 int main(int argc, char** argv) {
-
 
     Fl_Window *TalkFLTKWindow = new Fl_Window(800,500);
 
@@ -224,6 +239,7 @@ int main(int argc, char** argv) {
     TalkFLTKWindow->show(argc, argv);
 
     std::thread talknet(networkThread, TextBoxSend, TextBox);
+    talknet.detach();
 
     Fl::run();
 
