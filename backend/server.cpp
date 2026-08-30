@@ -8,10 +8,17 @@
 #include <algorithm>
 #include <unordered_map>
 #include "serverNetwork.hpp"
-// #include "quickutils.hpp" 
+#include "quickutils.hpp" 
+
+void plog(std::string ansi, std::string header, std::string message) {
+    std::cout << ansi << "[" << header << "]\x1b[0m" << message << "\x1b[0m\n";
+    return;
+};
+
 
 int main(){
 
+    //Allocate Consold
     AllocConsole();
     
     FILE* NewConsole;
@@ -19,9 +26,14 @@ int main(){
     freopen_s(&NewConsole, "CONOUT$", "w", stderr);
     freopen_s(&NewConsole, "CONIN$", "r", stdin);
 
-    // qu s;
-
     std::cout << "Server Starting\n";
+
+    std::unordered_map<std::string, int> rooms = {
+        //template
+        // {"RoomID", peopleOnline}
+        //people Online is a problem we will fix later (add later)
+        {"Room1", 0}
+    };
     
     WSADATA wsaData;
     int status = WSAStartup(MAKEWORD(2,2),&wsaData);
@@ -55,30 +67,36 @@ int main(){
     std::cout << "\x1b[0;38;5;10;49m[servertpp]\x1b[0m Server is running!\n";
     while (runServer) {
  
-
         SOCKET clientSocket = accept(talkSocket, nullptr, nullptr);
        
         if (clientSocket == INVALID_SOCKET) {
             int erracc = WSAGetLastError();
 
             if (erracc != WSAEWOULDBLOCK) {
-                // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "An error occured while accepting a client. Error Code: " + erracc);
+                plog("\x1b[1;38;5;11;49m", "talksocketinfo", "An error occured while accepting a client. Error Code: " + erracc);
+            } else if (erracc == WSAECONNRESET) {
+                closesocket(clientSocket);
             };
         } else {
-            // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Validating client...");
+            plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Validating client...");
             int socketError = 0;
             int optLen = sizeof(socketError);
 
             int result = getsockopt(clientSocket, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&socketError), &optLen);
 
             if (result == SOCKET_ERROR) {
-                // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "getsockopt() failed. Error Code: " + std::to_string(WSAGetLastError()) + "\n");
+                plog("\x1b[1;38;5;11;49m", "talksocketinfo", "getsockopt() failed. Error Code: " + std::to_string(WSAGetLastError()));
             } else {
-                // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "socket error Error Code: " + std::to_string(socketError) + "\n");
+                plog("\x1b[1;38;5;11;49m", "talksocketinfo", "socket error Error Code: " + std::to_string(socketError));
             }
 
             Clients.push_back(clientSocket);
-            // s.plog("\x1b[1;38;5;11;49m", "talksocketinfo", "\x1b[1;3;38;5;46;49mconnection success\n");
+
+            plog("\x1b[1;38;5;11;49m", "talksocketinfo", "\x1b[1;3;38;5;46;49mconnection success");
+            sockaddr_in clientAddress;
+            int size = sizeof(clientAddress);
+            getpeername(clientSocket, (sockaddr*)&clientAddress, &size);
+            plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Client IP: " + (std::string)inet_ntoa(clientAddress.sin_addr));
         };
 
         SOCKET disconnectCli = INVALID_SOCKET;
@@ -90,8 +108,25 @@ int main(){
 
             //Recieve string
             std::string ReceiveResult = TSNet.RecieveClientNetworkData(&sock, &Clients, &disconnectCli);
-            std::cout << ReceiveResult << std::endl;
-            
+            if (ReceiveResult != "") {
+                std::string clientip;
+                sockaddr_in clsad;
+                int sizes = sizeof(clsad);
+                getpeername(sock, (sockaddr*)&clsad, &sizes);
+                clientip = (std::string)inet_ntoa(clsad.sin_addr);
+                plog("\x1b[1;38;5;11;49m", "talksocketinfo", "From Client:" + clientip + "recieve result: " + ReceiveResult);
+            } else if (ReceiveResult == "NewRoom") {
+                for (const auto& client : Clients) {
+
+
+                    rooms.insert(std::make_pair({"Room" + std::to_string(rooms.size()+1), 0}));
+                    std::string SendResult = TSNet.SendClientNetworkData(&client, std::to_string(rooms));
+
+                    
+                }   
+            } else {
+                // plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Recieve Result is an empty string.");
+            };
             //Send string to rest of clients
             for (const auto& subSock : Clients) {
                 if (subSock == sock) {

@@ -25,7 +25,7 @@ std::string RecieveStep(const SOCKET *ClientSocket, char *Buffer, int Length, bo
         } else {
             std::cout << "Error code: " << Error << "\n";
             *ClientDisconnect = true;
-            return "failure";
+            return "failure";   
         }
     } else {   
         if (RecievedBytes > 0) {
@@ -64,9 +64,15 @@ std::string TalkServerNetwork::RecieveClientNetworkData(const SOCKET* ClientSock
         
         std::string Result = RecieveStep(ClientSocket, TalkBuffer + occBytes, 2 - occBytes, &ClientDisconnect, &occBytes);
         
-        if (Result == "success" || Result == "waiting") {
+        if (Result == "success") {
             continue;
-        } else {
+        };
+
+        if (Result == "waiting") {
+            return "";
+        }
+
+        if (Result == "failure") {
             break;
         };
     };
@@ -88,11 +94,13 @@ std::string TalkServerNetwork::RecieveClientNetworkData(const SOCKET* ClientSock
     while (occBytes < TalkFrame) {
         std::string Result = RecieveStep(ClientSocket, TalkBuffer+occBytes, TalkFrame-occBytes, &ClientDisconnect, &occBytes);
         
-        if (Result == "success" || Result == "waiting") {
+        if (Result == "success") {
             continue;
-        } else {
-            break;
         };
+
+        if (Result == "waiting") {
+            return "";
+        }
     };
 
     if (ClientDisconnect) {

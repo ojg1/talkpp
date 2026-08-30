@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <chrono> 
 
 //Windows Headers with Networking
 #include <WinSock2.h>
@@ -126,6 +127,11 @@ void SendDataCallback(Fl_Widget* widget, void* data) {
     SendData(callback->ClientSocket, callback->TextBox->value());
 };
 
+void CreateNewRoomCallback(Fl_Widget* widget, void* data) {
+    cbckd* callback = static_cast<cbckd*>(data);
+    SendData(callback->ClientSocket, "NewRoom");
+};
+
 int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox){
     std::cout << "netthread started\n" << std::flush;
 
@@ -194,7 +200,15 @@ int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox){
     return 0;
 };
 
+struct talkaddressinfo{
+    int pingms;
+};
+
 int main(int argc, char** argv) {
+
+    unordered_map<string, talkaddressinfo> RoomAddresses = {
+        {"", {0}}
+    };
 
     Fl_Window *TalkFLTKWindow = new Fl_Window(800,500);
 
@@ -212,6 +226,7 @@ int main(int argc, char** argv) {
     Rooms->begin();
         Fl_Button* AddNew = new Fl_Button(Rooms->x()+10,Rooms->y()+415, 130, 25, "+ Add Room");
         AddNew->box(FL_PLASTIC_UP_BOX);
+        AddNew->callback(CreateNewRoomCallback);
     Rooms->end();
 
     MainChat->begin();
