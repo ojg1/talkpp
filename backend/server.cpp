@@ -15,10 +15,9 @@ void plog(std::string ansi, std::string header, std::string message) {
     return;
 };
 
-
 int main(){
 
-    //Allocate Consold
+    //Allocate Console
     AllocConsole();
     
     FILE* NewConsole;
@@ -28,12 +27,6 @@ int main(){
 
     std::cout << "Server Starting\n";
 
-    std::unordered_map<std::string, int> rooms = {
-        //template
-        // {"RoomID", peopleOnline}
-        //people Online is a problem we will fix later (add later)
-        {"Room1", 0}
-    };
     
     WSADATA wsaData;
     int status = WSAStartup(MAKEWORD(2,2),&wsaData);
@@ -87,7 +80,7 @@ int main(){
             if (result == SOCKET_ERROR) {
                 plog("\x1b[1;38;5;11;49m", "talksocketinfo", "getsockopt() failed. Error Code: " + std::to_string(WSAGetLastError()));
             } else {
-                plog("\x1b[1;38;5;11;49m", "talksocketinfo", "socket error Error Code: " + std::to_string(socketError));
+                plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Socket last error: " + std::to_string(socketError));
             }
 
             Clients.push_back(clientSocket);
@@ -107,32 +100,27 @@ int main(){
             TalkServerNetwork TSNet;
 
             //Recieve string
-            std::string ReceiveResult = TSNet.RecieveClientNetworkData(&sock, &Clients, &disconnectCli);
-            if (ReceiveResult != "") {
+            ReceiveResult RecvResult = TSNet.RecieveClientNetworkData(&sock);
+            if (RecvResult.recieveStr != "" && RecvResult.status == 0 && RecvResult.recieveStr != "ServerWaiting") {
+
                 std::string clientip;
                 sockaddr_in clsad;
                 int sizes = sizeof(clsad);
+
                 getpeername(sock, (sockaddr*)&clsad, &sizes);
                 clientip = (std::string)inet_ntoa(clsad.sin_addr);
-                plog("\x1b[1;38;5;11;49m", "talksocketinfo", "From Client:" + clientip + "recieve result: " + ReceiveResult);
-            } else if (ReceiveResult == "NewRoom") {
-                for (const auto& client : Clients) {
-
-
-                    rooms.insert(std::make_pair({"Room" + std::to_string(rooms.size()+1), 0}));
-                    std::string SendResult = TSNet.SendClientNetworkData(&client, std::to_string(rooms));
-
-                    
-                }   
-            } else {
-                // plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Recieve Result is an empty string.");
+                plog("\x1b[1;38;5;11;49m", "talksocketinfo", "From Client:" + clientip + ", recieve result: " + RecvResult.recieveStr);
+            
+            } else if (RecvResult.status == 1) {
+                closesocket(sock);
+                disconnectCli = sock;
             };
             //Send string to rest of clients
             for (const auto& subSock : Clients) {
                 if (subSock == sock) {
                     continue;
                 } else {
-                    std::string SendResult = TSNet.SendClientNetworkData(&subSock,  ReceiveResult);
+                    std::string SendResult = TSNet.SendClientNetworkData(&subSock, RecvResult.recieveStr);
                 }            
             }
         };

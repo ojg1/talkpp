@@ -1,0 +1,20 @@
+
+            // } else if (RecvResult.recieveStr == "NewRoom") {
+            //     for (const auto& client : Clients) {
+            //         std::string roomSize = std::to_string(rooms.size()+1);
+            //         rooms.insert({"Room" + roomSize, 0});
+            //         // std::string SendResult = TSNet.SendRoomData(&client, rooms);
+            //     }
+            // } else {
+            //     // plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Recieve Result is an empty string.");
+            //hey excuse me
+            //it works alright
+            //i think so
+
+    //         std::vector<std::string, int> rooms = {
+    //     //template
+    //     // {"RoomID", peopleOnline}
+    //     //people Online is a problem we will fix later (add later)
+    //     {"Room1", 0}
+    // };
+    

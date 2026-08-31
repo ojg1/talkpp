@@ -6,13 +6,20 @@
 #include <WS2tcpip.h>
 #include "serverNetwork.hpp"
 #include "quickutils.hpp"
+#include <unordered_map>
 
 /*
 1st recv loop recv(*ClientSocket, TalkBuffer + occBytes, 2 - occBytes, 0);
 2nd recv loop recv(*ClientSocket, TalkBuffer+occBytes, TalkFrame-occBytes, 0);
 */
 
-std::string RecieveStep(const SOCKET *ClientSocket, char *Buffer, int Length, bool *ClientDisconnect, size_t *occBytes) {
+void plogs(std::string ansi, std::string header, std::string message) {
+    std::cout << ansi << "[" << header << "]\x1b[0m " << message << "\x1b[0m\n";
+    return;
+};
+
+std::string RecieveStep(const SOCKET *ClientSocket, char *Buffer, int Length, int *Errno, size_t *occBytes) {
+
 
     int RecievedBytes = recv(*ClientSocket, Buffer, Length, 0);
     int Error = (RecievedBytes == SOCKET_ERROR) ? WSAGetLastError() : 0;
@@ -24,7 +31,7 @@ std::string RecieveStep(const SOCKET *ClientSocket, char *Buffer, int Length, bo
             return "waiting";
         } else {
             std::cout << "Error code: " << Error << "\n";
-            *ClientDisconnect = true;
+            *Errno = Error;
             return "failure";   
         }
     } else {   
@@ -32,7 +39,7 @@ std::string RecieveStep(const SOCKET *ClientSocket, char *Buffer, int Length, bo
             *occBytes += RecievedBytes;
         } else if (RecievedBytes == 0) {
             std::cout << "Client-side activated disconnect\n";
-            *ClientDisconnect = true;
+            *Errno = Error;
             return "failure";
         };
     };
@@ -50,74 +57,84 @@ void printRawBytes(size_t *occBytes, char *TalkBuffer) {
     std::cout << std::dec << "\n";
 };
 
-std::string TalkServerNetwork::RecieveClientNetworkData(const SOCKET* ClientSocket, std::vector<SOCKET>* ClientsVector, SOCKET* disconnectClient) {
+ReceiveResult TalkServerNetwork::RecieveClientNetworkData(const SOCKET* ClientSocket) {
 
     /*
     Returns a full elligible string safely from a TCP client over a network. 
     */
-
-    bool ClientDisconnect = false;
     char TalkBuffer[1024];
     std::string::size_type occBytes = 0;
 
+    ReceiveResult resrecv = {"", 0};
+    int errno;
+
     while (occBytes < 2) {
         
-        std::string Result = RecieveStep(ClientSocket, TalkBuffer + occBytes, 2 - occBytes, &ClientDisconnect, &occBytes);
+        std::string Result = RecieveStep(ClientSocket, TalkBuffer + occBytes, 2 - occBytes, &errno, &occBytes);
         
         if (Result == "success") {
             continue;
         };
 
         if (Result == "waiting") {
-            return "";
+            return {"ServerWaiting", 0};
         }
 
         if (Result == "failure") {
+            resrecv.status = 1;
             break;
         };
     };
 
-    if (ClientDisconnect) {
-        std::cout << "Occupied Bytes: " << occBytes << "\n";
-        std::cout << "Client was disconnected during framing. \n";
-        *disconnectClient = *ClientSocket;
-        return "Client Disconnected";
+    if (resrecv.status == 1) {
+        plogs("\x1b[0;38;5;198;49m", "talkrecv", "Occupied Bytes" + occBytes);
+        plogs("\x1b[0;38;5;198;49m", "talkrecv", "Client disconnected or encountered an error during payload framing" + occBytes);
+        resrecv.recieveStr = std::to_string(errno);
+        return resrecv;
     };
 
-    std::cout << "Message Framing was Recieved" << std::endl;
     uint16_t TalkFrame;
     memcpy(&TalkFrame, TalkBuffer, 2);
     
     TalkFrame = ntohs(TalkFrame);
-    std::cout << "Frame: " << TalkFrame << "\n";
+    plogs("\x1b[0;38;5;198;49m", "talkrecv", "!Message Framing was Recieved. Frame: " + TalkFrame);
 
     while (occBytes < TalkFrame) {
-        std::string Result = RecieveStep(ClientSocket, TalkBuffer+occBytes, TalkFrame-occBytes, &ClientDisconnect, &occBytes);
+        std::string Result = RecieveStep(ClientSocket, TalkBuffer+occBytes, TalkFrame-occBytes, &errno, &occBytes);
         
         if (Result == "success") {
             continue;
         };
 
         if (Result == "waiting") {
-            return "";
+            return {"ServerWaiting", 0};
         }
+
+        if (Result == "failure") {
+            resrecv.status = 1;
+            break;
+        };
     };
 
-    if (ClientDisconnect) {
-        std::cout << "Client was disconnected while waiting for entire buffer." << std::endl; 
-        *disconnectClient = *ClientSocket;
-        return "Client Disconnected";
+    if (resrecv.status == 1) {
+        plogs("\x1b[0;38;5;198;49m", "talkrecv", "Client was disconnected or encountered an error while waiting for entire buffer.");
+        resrecv.recieveStr = std::to_string(errno);
+        return resrecv;
     };
-
 
     std::string Message(TalkBuffer+2, occBytes-2);
     std::string Final(TalkBuffer, occBytes);
 
-    std::cout << "Socket second check complete" << std::endl;
+    plogs("\x1b[0;38;5;198;49m", "talkrecv", "Payload successfully retrieved");
 
-    return Final;
+    //one final check before return
+    if (resrecv.recieveStr != "" && resrecv.status == 0) {    
+        return resrecv;
+    } else {
+        return {"ServerUnknownError", 1};
+    };
+
 };
-
 
 std::string TalkServerNetwork::SendClientNetworkData(const SOCKET* ClientSocket, std::string StringToSend) {
 
@@ -133,3 +150,17 @@ std::string TalkServerNetwork::SendClientNetworkData(const SOCKET* ClientSocket,
 
     return Final;
 };
+
+bool TalkServerNetwork::ServerClientHandShake(const SOCKET* AcceptedClientSocket, int supported, int maximumRoomNumber) {
+
+    bool successconn;
+
+    std::string fullSendStart = std::to_string(supported) + ";" + std::to_string(maximumRoomNumber);
+    this->SendClientNetworkData(AcceptedClientSocket, fullSendStart);
+
+    auto response = this->RecieveClientNetworkData(AcceptedClientSocket);
+
+    
+    return successconn;    
+};
+
