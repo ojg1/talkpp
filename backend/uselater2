@@ -1,0 +1,60 @@
+
+            // } else if (RecvResult.recieveStr == "NewRoom") {
+            //     for (const auto& client : Clients) {
+            //         std::string roomSize = std::to_string(rooms.size()+1);
+            //         rooms.insert({"Room" + roomSize, 0});
+            //         // std::string SendResult = TSNet.SendRoomData(&client, rooms);
+            //     }
+            // } else {
+            //     // plog("\x1b[1;38;5;11;49m", "talksocketinfo", "Recieve Result is an empty string.");
+            //hey excuse me
+            //it works alright
+            //i think so
+
+    //         std::vector<std::string, int> rooms = {
+    //     //template
+    //     // {"RoomID", peopleOnline}
+    //     //people Online is a problem we will fix later (add later)
+    //     {"Room1", 0}
+    // };
+    //std::string SendRoomData(const SOCKET* ClientSocket, std::vector<Room> RoomsToSend);
+
+    
+//std::string TalkServerNetwork::SendRoomData(const SOCKET* ClientSocket, std::vector<Room> Rooms) {
+//    std::string Final; //final = result or smth
+//
+//    //the below lines of code attempt to dip the rooms into cereal (serialize something)
+//    std::string serializedRooms = "rooms_"; // we need this to differentiate between message data and room data YKYKKYKY
+//    //IMPORTANT MESSAGEGEGE
+//    //ok so rn a user could just send rooms_ in their message and it would break the thing
+//    //hb i need ur protocol thingies to do stuff
+//    //or we could do a 
+//    //if type == 1 (message) then
+//    //message
+//    //if type == 2 (roomdata) then
+//    //type shi
+//
+//    //message format for client
+//    // type args
+//    // ping 
+//    // send [message]
+//    // swroom [room]
+//    // send(clientsocket, type, message???)
+//
+//    for (const auto& room : Rooms) {
+//        serializedRooms += room.roomLabel + ":" + std::to_string(room.peopleOnline) + ";";
+//    };
+//    //            v amount of people active
+//    // room_Room1:0;
+//    //       ^^name  
+//    const char* TextMessageBuffer = serializedRooms.c_str();
+//    int occBytes = 0;
+//    
+//    while (occBytes < serializedRooms.length()) {
+//        int SendBytes = send(*ClientSocket, TextMessageBuffer+occBytes, serializedRooms.length() - occBytes, 0);
+//        occBytes += SendBytes;
+//   };
+//
+//    return Final;
+//}
+//

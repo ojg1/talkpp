@@ -1,4 +1,5 @@
 //C++ Headers
+
 #include <iostream>
 #include <unordered_map>
 #include <vector>
@@ -28,6 +29,7 @@
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Pack.H>
 #include <FL/Fl_Output.H>
+#include <FL/fl_draw.H>
 
 using std::string;
 using std::vector;
@@ -42,14 +44,20 @@ struct cbckd {
     Fl_Input* TextBox;
     SOCKET* ClientSocket;
 };
-//plog("\x1b[0;38;5;10;49m", "stuff", "stuff did something");
-//output:
-//[stuff] stuff did something
+
+struct TalkAddressInfo{
+    string AddressLabel;
+    string Port;
+    string RoomName;
+    int maxMembers;
+    vector<string> Members;
+    vector<string> Messages;
+};
 
 //Functions
 string RecieveData(SOCKET *Client) {
     std::string result;
-    char chunk[1024];
+    char chunk[1024] = {0};
     int occBytes = 0;
 
     while (true) {
@@ -58,7 +66,7 @@ string RecieveData(SOCKET *Client) {
         if (recieveStatus > 0) {
             occBytes += recieveStatus;
         } else if (recieveStatus == 0) {
-            break;
+            break;  
         }
         else { // SOCKET_ERROR
             int err = WSAGetLastError();
@@ -89,24 +97,25 @@ string RecieveData(SOCKET *Client) {
 //https://learn.microsoft.com/en-us/windows/win32/winsock/sending-and-receiving-data-on-the-client
 //PLANNED: use correct framing logic so server can parse it
 string SendData(SOCKET* ClientSocket, string message) {
+    if (!ClientSocket || *ClientSocket == INVALID_SOCKET) {
+        return "failure";
+    }
 
-    int totalLength = message.length() + 2;
+    int totalLength = static_cast<int>(message.length()) + 2;
+    std::vector<char> messageBuffer(totalLength);
 
-    char messageBuffer[totalLength];
-
-    uint16_t length = htons(totalLength);
-    memcpy(messageBuffer, &length, 2);
-
-    memcpy(messageBuffer + 2, message.data(), message.length());
+    uint16_t length = htons(static_cast<uint16_t>(totalLength));
+    memcpy(messageBuffer.data(), &length, 2);
+    
+    memcpy(messageBuffer.data() + 2, message.data(), message.length());
 
     int occBytes = 0;
     bool err = false;
 
     while (occBytes < totalLength) {
-
         int bytesSent = send(
             *ClientSocket,
-            messageBuffer + occBytes,
+            messageBuffer.data() + occBytes,
             totalLength - occBytes,
             0
         );
@@ -121,21 +130,26 @@ string SendData(SOCKET* ClientSocket, string message) {
         occBytes += bytesSent;
     }
 
-    if (err) {
-        return "failure";
-    } else {
-        return "success";
-    }
+    return err ? "failure" : "success";
 }
 
 void SendDataCallback(Fl_Widget* widget, void* data) {
     cbckd* callback = static_cast<cbckd*>(data);
-    SendData(callback->ClientSocket, callback->TextBox->value());
+    const char* val = callback->TextBox->value();
+    std::string textToSend = (val != nullptr) ? val : "";
+
+    if (!textToSend.empty()) {
+        SendData(callback->ClientSocket, textToSend);
+        callback->TextBox->value("");
+    }
 };
 
 void CreateNewRoomCallback(Fl_Widget* widget, void* data) {
+    if (!data) return;
     cbckd* callback = static_cast<cbckd*>(data);
-    SendData(callback->ClientSocket, "NewRoom");
+    if (callback && callback->ClientSocket) {
+        SendData(callback->ClientSocket, "NewRoom");
+    }
 };
 
 void AddNewMessage(std::string message, Fl_Scroll* ChatScroll) {
@@ -149,7 +163,6 @@ void AddNewMessage(std::string message, Fl_Scroll* ChatScroll) {
 
     ChatScroll->add(new_msg);
 
-    //ChatScroll->scroll_to(0, TextBoxText->h()); //snap to bottom or smth
 }
 
 int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox, Fl_Scroll* ChatScroll, string ADDRESS, string PORT){
@@ -228,13 +241,43 @@ int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox, Fl_Scroll* Ch
     return 0;
 };
 
-struct talkaddressinfo{
-    int pingms;
+class RoomDisplayWidget : public Fl_Widget {
+    public:
+
+        TalkAddressInfo addressinfo;
+
+        RoomDisplayWidget(int x, int y, int w, int h, TalkAddressInfo addressinfo)
+            : Fl_Widget(x,y,w,h), addressinfo(addressinfo)
+        {
+            box(FL_PLASTIC_DOWN_BOX);
+        };
+
+        void draw() override {
+            //Show Room Label
+            fl_color(FL_BLACK);
+            fl_draw(addressinfo.RoomName.c_str(), x(), y());
+
+            //Show MembersW
+            fl_color(FL_GRAY);
+            string meminfo = std::to_string(addressinfo.Members.size()) + "/" + std::to_string(addressinfo.maxMembers);
+            fl_draw(meminfo.c_str(),x()+w()-fl_width(meminfo.c_str())-5, y()+h()-fl_height()-5);
+            
+            //Show Address and Port
+            fl_color(FL_GRAY);
+            string addrinfotext = addressinfo.AddressLabel + ":" + addressinfo.Port;
+            fl_draw(addrinfotext.c_str(), x()+5, y()+h()-fl_height()-5);
+        };
+
 };
 
 int main(int argc, char** argv) {
 
-    vector<talkaddressinfo> RoomAddresses = {};
+    vector<TalkAddressInfo> RoomAddresses = {};
+    vector<std::thread> roomaddressthreads = {};
+
+    //RoomAddresses contain a TalkAddressInfo
+    //Start a new thread for each TalkAddressInfo
+    //and if one socket disconnects, make sure the whole client doesnt screw up because one died of many
 
     Fl_Window *TalkFLTKWindow = new Fl_Window(800,500);
 
@@ -274,6 +317,11 @@ int main(int argc, char** argv) {
             TextBoxText->type(Fl_Pack::VERTICAL);
             TextBoxText->spacing(5); 
             TextBoxText->begin();
+
+            //
+
+
+            TextBoxText->end();
         ChatScroll->end();
     MainChat->end();    
 
@@ -287,8 +335,13 @@ int main(int argc, char** argv) {
 
     TalkFLTKWindow->end();
     TalkFLTKWindow->show(argc, argv);
-    std::thread talknet(networkThread, TextBoxSend, TextBox, ChatScroll, "hb930.duckdns.org", "930");
-    talknet.detach();
+
+    //start looping thread
+
+    for (const auto& add : RoomAddresses) {
+        std::thread addrthreadgen(networkThread, TextBoxSend, TextBox, ChatScroll, add.AddressLabel, add.Port);
+        roomaddressthreads.push_back(std::move(addrthreadgen));
+    };
 
     Fl::run();
 

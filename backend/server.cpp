@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <unordered_map>
 #include "serverNetwork.hpp"
-#include "quickutils.hpp" 
+// #include "quickutils.hpp" 
 
 void plog(std::string ansi, std::string header, std::string message) {
     std::cout << ansi << "[" << header << "]\x1b[0m" << message << "\x1b[0m\n";
@@ -101,6 +101,7 @@ int main(){
 
             //Recieve string
             ReceiveResult RecvResult = TSNet.RecieveClientNetworkData(&sock);
+            
             if (RecvResult.recieveStr != "" && RecvResult.status == 0 && RecvResult.recieveStr != "ServerWaiting") {
 
                 std::string clientip;
@@ -125,6 +126,7 @@ int main(){
             }
         };
 
+        //if statement might be redundant
         if (disconnectCli != INVALID_SOCKET) {
             Clients.erase(
                 std::remove(Clients.begin(), Clients.end(), disconnectCli),
