@@ -7,27 +7,100 @@
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
+#include <thread>
+#include <atomic>
 #include "serverNetwork.hpp"
-// #include "quickutils.hpp" 
+// #include "quickutils.hpp"
+
+#define STOP_BUTTON 1
+
+//print log convience
+#define plogRED "\x1b[0;38;5;196;49m"
+#define plogGREEN "\x1b[1;38;5;40;49m"
+#define plogBLUE "\x1b[0;38;5;21;49m"
+#define plogYELLOW "\x1b[0;38;5;11;49m"
+#define plogORANGE "\x1b[0;38;5;208;49m"
+#define plogPURPLE "\x1b[0;38;5;129;49m"
+#define plogPINK "\x1b[0;38;5;201;49m"
+#define plogCYAN "\x1b[0;38;5;51;49m"
+
+#define plogBOLD "\x1b[1m"
+#define plogITALIC "\x1b[3m"
+
+std::atomic<bool> runServer = true;
 
 void plog(std::string ansi, std::string header, std::string message) {
     std::cout << ansi << "[" << header << "]\x1b[0m" << message << "\x1b[0m\n";
     return;
 };
 
-int main(){
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            runServer = false;
+            DestroyWindow(hwnd);
+            return 0;
+        case WM_COMMAND:
+            if (LOWORD(wParam) == STOP_BUTTON) {
+                runServer = false;
+                DestroyWindow(hwnd);
+            };
+            return 0;
+    };
 
-    //Allocate Console
-    AllocConsole();
-    
-    FILE* NewConsole;
-    freopen_s(&NewConsole, "CONOUT$", "w", stdout);
-    freopen_s(&NewConsole, "CONOUT$", "w", stderr);
-    freopen_s(&NewConsole, "CONIN$", "r", stdin);
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
+};
 
-    std::cout << "Server Starting\n";
+void RunGUI() {
 
-    
+    WNDCLASSW wc = {};
+    wc.lpfnWndProc = WindowProc;
+    wc.hInstance = GetModuleHandle(nullptr);
+    wc.lpszClassName = L"Talk++";
+
+    RegisterClassW(&wc);
+
+    //Control Panel Handling
+    HWND hwnd = CreateWindowExW(
+        0,
+        L"Talk++",
+        L"Talk++ Server",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        200, 100,
+        nullptr,
+        nullptr,
+        GetModuleHandle(nullptr),
+        nullptr
+    );
+
+    HWND button = CreateWindowExW(
+        0,
+        L"BUTTON",
+        L"Stop Server",
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        50, 30,
+        100, 30,
+        hwnd,
+        (HMENU)STOP_BUTTON,
+        GetModuleHandle(nullptr),
+        nullptr
+    );
+
+    ShowWindow(hwnd, SW_SHOW);
+    UpdateWindow(hwnd);
+
+    MSG msg = {};
+
+    while (GetMessage(&msg, nullptr, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    };
+
+};
+
+void Server() {
     WSADATA wsaData;
     int status = WSAStartup(MAKEWORD(2,2),&wsaData);
 
@@ -56,7 +129,6 @@ int main(){
     u_long blockingIdentifier = 1;
     ioctlsocket(talkSocket, FIONBIO, &blockingIdentifier);
 
-    bool runServer = true;
     std::cout << "\x1b[0;38;5;10;49m[servertpp]\x1b[0m Server is running!\n";
     while (runServer) {
  
@@ -137,6 +209,24 @@ int main(){
     };
 
     WSACleanup();
+};
+
+int main(){
+
+    //Allocate Console
+    AllocConsole();
+    
+    FILE* NewConsole;
+    freopen_s(&NewConsole, "CONOUT$", "w", stdout);
+    freopen_s(&NewConsole, "CONOUT$", "w", stderr);
+    freopen_s(&NewConsole, "CONIN$", "r", stdin);
+
+    std::cout << "Server Starting\n";
+    
+    std::thread serverThread(Server);
+    std::thread guiThread(RunGUI);
+    guiThread.join();
+    serverThread.join();
 
     return 0;
 };

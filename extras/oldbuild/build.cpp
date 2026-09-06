@@ -31,12 +31,15 @@ int main(int argc, char* argv[]) {
 
     bool WriteWhenError = false;
 
-    printLog("IGNORE: testlog");
+    if (argv[1] == nullptr) {
+        printLog("Please pass in an argument");
+    }
 
     if ((std::string)argv[1] == "frontend" || (std::string)argv[1] == "backend") {
 
         std::string buildchoice = argv[1];
-        std::string buildDirectory = "D:/Projects/TalkProject/Talk++dev/";
+        std::string buildDirectory = "../"; //this code change was made part of   "D:/Projects/TalkProject/Talk++dev/";
+        //                                 part of baller's executive orders to stop hardcoded directories!!!
         std::string gcclib = "C:/gcclib";
         std::string line;
         std::vector<std::string> FileLines = {};
@@ -77,7 +80,7 @@ int main(int argc, char* argv[]) {
             +" -lwinspool"
 
             +" -lws2_32" //WinSock2
-            +" -o D:\\Projects\\TalkProject\\talk++dev\\frontend\\Talk++fe";
+            +" -o ../frontend/Talk++fe";
 
             printLog("--------------------------------------------------");
             printLog("\x1b[1;38;5;202;49mFrontend Build "+std::to_string(frontendBuildCount));
@@ -91,7 +94,7 @@ int main(int argc, char* argv[]) {
                 };
                 return 4;
             } else {
-                std::system("D:\\Projects\\TalkProject\\talk++dev\\frontend\\Talk++fe.exe");
+                std::system("..\\frontend\\Talk++fe.exe");
                 printLog("\x1b[1;38;5;46;49mbuild success");
                 writeNewBuildc(".build_count", FileLines, backendBuildCount, frontendBuildCount);
                 return 0;

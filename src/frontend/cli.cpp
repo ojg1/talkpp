@@ -45,13 +45,23 @@ struct cbckd {
     SOCKET* ClientSocket;
 };
 
-struct TalkAddressInfo{
+struct Color3 {
+    unsigned char r,g,b;
+};
+
+struct Message {
+    string user;
+    string content;
+    Color3 usercolor;
+};
+
+struct TalkAddressInfo {
     string AddressLabel;
     string Port;
     string RoomName;
     int maxMembers;
     vector<string> Members;
-    vector<string> Messages;
+    vector<Message> Messages;
 };
 
 //Functions
@@ -66,13 +76,17 @@ string RecieveData(SOCKET *Client) {
         if (recieveStatus > 0) {
             occBytes += recieveStatus;
         } else if (recieveStatus == 0) {
+            std::cout << "debugging 1";
             break;  
         }
         else { // SOCKET_ERROR
             int err = WSAGetLastError();
+            std::cout << "debugging 2: socket error";
             if (err == WSAEWOULDBLOCK) {
+                std::cout << "debugging 3: socket would love to block";
                 break;
             } else {
+                std::cout << "debugging 4: error";
                 std::cout << "TalkClient recv: error occured\n";
                 break;
             }
@@ -270,10 +284,62 @@ class RoomDisplayWidget : public Fl_Widget {
 
 };
 
-int main(int argc, char** argv) {
+class UserMessageWidget : public Fl_Widget {
+    public:
+        
+        Message message;
 
-    vector<TalkAddressInfo> RoomAddresses = {};
-    vector<std::thread> roomaddressthreads = {};
+        UserMessageWidget(int x, int y, int w, int h, Message msg) 
+            : Fl_Widget(x,y,w,h), message(msg)
+        {
+            box(FL_NO_BOX);
+        };
+
+        void draw() override {
+
+            fl_color(message.usercolor.r, message.usercolor.g, message.usercolor.b);
+            fl_draw(message.user.c_str(), x(), y());
+            
+            fl_color(FL_BLACK);
+            fl_draw(message.content.c_str(), x()+fl_width(message.user.c_str()), y());
+
+        };
+};
+
+int main(int argc, char** argv) {
+//   string user;
+//   string content;
+//   Color3 usercolor;
+//;
+
+    vector<TalkAddressInfo> RoomAddresses = { //example data
+       TalkAddressInfo {
+         "http://localhost",
+        "3000",
+        "cool example room",
+        5,
+        {"bob", "baller", "hb"},
+        {
+            {
+                "bob",
+                "im bob and im trying to reach that cube shaped thing",
+                {80, 150, 255}
+            },
+            {
+                "eric",
+                "hahhahah i made you endure this torture",
+                {80, 150, 255}
+            },
+            {
+                "baller",
+                "im just a spectator if yall get in trouble this aint my fault ",
+                {80, 150, 255}
+            }
+        }
+
+       }
+    };
+    vector<std::thread> roomaddressthreads;
 
     //RoomAddresses contain a TalkAddressInfo
     //Start a new thread for each TalkAddressInfo
@@ -302,9 +368,6 @@ int main(int argc, char** argv) {
         Fl_Input* TextBox = new Fl_Input(MainChat->x()+10,MainChat->y()+415, 370, 25);
         TextBox->placeholder("Type your message here...");
         TextBox->box(FL_PLASTIC_UP_BOX);
-        //as baller i am making the executive decision to
-        //turn fl scroll into fl pack
-        //nvm cuz we need em both
 
         Fl_Return_Button* TextBoxSend = new Fl_Return_Button(MainChat->x()+390, MainChat->y()+415, 100, 25, "Send");
         TextBoxSend->box(FL_PLASTIC_UP_BOX);
@@ -317,9 +380,8 @@ int main(int argc, char** argv) {
             TextBoxText->type(Fl_Pack::VERTICAL);
             TextBoxText->spacing(5); 
             TextBoxText->begin();
-
-            //
-
+                
+                
 
             TextBoxText->end();
         ChatScroll->end();
@@ -335,6 +397,8 @@ int main(int argc, char** argv) {
 
     TalkFLTKWindow->end();
     TalkFLTKWindow->show(argc, argv);
+
+    AddNewMessage("balls", ChatScroll);
 
     //start looping thread
 

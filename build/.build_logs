@@ -1,0 +1,73 @@
+[2026-09-05 22:40:52.861][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Output Name: Talk++be.exe[0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m [0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Additional: [0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m                [1;38;5;40;49m[1mInclude Directories[0m        [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+
+[2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m ├─serverNetwork.cpp      ├─                         ├─                         ├─ws2_32                  [0m
+
+[2026-09-05 22:40:52.865][0;38;5;11;49m[1m[info][0m [0m
+
+[2026-09-05 22:40:52.865][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\backend\server.cpp D:\Projects\TalkProject\talk++dev\src\backend\serverNetwork.cpp -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe[0m
+
+[2026-09-05 22:41:01.441][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;46;49msuccess[0m
+
+[2026-09-05 22:43:31.873][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m Output Name: Talk++be.exe[0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m                [1;38;5;40;49m[1mInclude Directories[0m        [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m ├─serverNetwork.cpp      ├─                         ├─                         ├─ws2_32                  [0m
+[2026-09-05 22:43:31.877][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-05 22:43:31.877][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\backend\server.cpp D:\Projects\TalkProject\talk++dev\src\backend\serverNetwork.cpp -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe[0m
+[2026-09-05 22:43:35.979][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;46;49msuccess[0m
+[2026-09-05 22:43:35.979][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
+[2026-09-05 22:44:38.080][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m Output Name: Talk++be.exe[0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m                [1;38;5;40;49m[1mInclude Directories[0m        [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-05 22:44:38.083][0;38;5;11;49m[1m[info][0m ├─serverNetwork.cpp      ├─                         ├─                         ├─ws2_32                  [0m
+[2026-09-05 22:44:38.084][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-05 22:44:38.084][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\backend\server.cpp D:\Projects\TalkProject\talk++dev\src\backend\serverNetwork.cpp -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe[0m
+[2026-09-05 22:44:41.958][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;46;49msuccess[0m
+[2026-09-05 22:44:41.958][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
+[2026-09-05 22:44:51.716][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-05 22:44:51.719][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-05 22:44:51.719][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-05 22:44:51.719][0;38;5;11;49m[1m[info][0m Output Name: Talk++be.exe[0m
+[2026-09-05 22:44:51.720][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-05 22:44:51.720][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-05 22:44:51.720][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-05 22:44:51.720][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-05 22:44:51.720][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-05 22:44:51.720][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m                [1;38;5;40;49m[1mInclude Directories[0m        [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-05 22:44:51.720][0;38;5;11;49m[1m[info][0m ├─serverNetwork.cpp      ├─                         ├─                         ├─ws2_32                  [0m
+[2026-09-05 22:44:51.720][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-05 22:44:51.720][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\backend\server.cpp D:\Projects\TalkProject\talk++dev\src\backend\serverNetwork.cpp -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe[0m
+[2026-09-05 22:44:55.883][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;46;49msuccess[0m
+[2026-09-05 22:44:55.883][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
