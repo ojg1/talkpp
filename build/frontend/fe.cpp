@@ -20,6 +20,10 @@
 // sub-project auth: OrangeJuiceGuy1
 // reason made: friend doesnt know how to code, also yes there will be a more complex version of coat this is just basic  
 
+//!!!!YOU ONLY MODIFY CERTAIN VARIABLES IN int main() {...};!!!!
+
+
+
 #include <iostream>
 #include <filesystem>
 #include <fstream>

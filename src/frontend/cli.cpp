@@ -35,6 +35,8 @@ using std::string;
 using std::vector;
 using std::unordered_map;
 
+vector<std::thread> roomaddressthreads;
+
 //util
 void plog(string ansi, string header, string message){
     std::cout << ansi << "[" << header << "]\x1b[0m" << message << "\x1b[0m\n";
@@ -108,8 +110,6 @@ string RecieveData(SOCKET *Client) {
     return result;
 };
 
-//https://learn.microsoft.com/en-us/windows/win32/winsock/sending-and-receiving-data-on-the-client
-//PLANNED: use correct framing logic so server can parse it
 string SendData(SOCKET* ClientSocket, string message) {
     if (!ClientSocket || *ClientSocket == INVALID_SOCKET) {
         return "failure";
@@ -147,6 +147,29 @@ string SendData(SOCKET* ClientSocket, string message) {
     return err ? "failure" : "success";
 }
 
+class UserMessageWidget : public Fl_Widget {
+    public:
+        
+        Message message;
+
+        UserMessageWidget(int x, int y, int w, int h, Message msg) 
+            : Fl_Widget(x,y,w,h), message(msg)
+        {
+            box(FL_NO_BOX);
+        };
+
+        void draw() override {
+
+            fl_color(message.usercolor.r, message.usercolor.g, message.usercolor.b);
+            fl_draw(message.user.c_str(), x(), y());
+            
+            fl_color(FL_BLACK);
+            fl_draw(message.content.c_str(), x()+fl_width(message.user.c_str()), y());
+
+        };
+};
+
+
 void SendDataCallback(Fl_Widget* widget, void* data) {
     cbckd* callback = static_cast<cbckd*>(data);
     const char* val = callback->TextBox->value();
@@ -166,20 +189,68 @@ void CreateNewRoomCallback(Fl_Widget* widget, void* data) {
     }
 };
 
-void AddNewMessage(std::string message, Fl_Scroll* ChatScroll) {
-    ChatScroll->init_sizes();
+void AddNewMessage(const std::string& message, Fl_Pack* MessagePack) {
 
-    Fl_Output* new_msg = new Fl_Output(0, 0, 464, 25);
+    int widgetWidth = MessagePack->w();
+    int widgetHeight = 30;
 
-    new_msg->box(FL_FLAT_BOX);
-    new_msg->textsize(14);
-    new_msg->value(message.c_str());
+    UserMessageWidget* msgWidget = new UserMessageWidget(
+        0,
+        0,
+        widgetWidth,
+        widgetHeight,
+        Message{
+            "baller",
+            message,
+            Color3{255, 255, 25}
+        }
+    );
 
-    ChatScroll->add(new_msg);
+    msgWidget->draw();
 
-}
+    MessagePack->add(msgWidget);
 
-int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox, Fl_Scroll* ChatScroll, string ADDRESS, string PORT){
+    MessagePack->init_sizes();
+
+    MessagePack->redraw();
+
+    if (MessagePack->parent()) {
+        MessagePack->parent()->redraw();
+    };
+};
+/*
+reference
+
+struct Message {
+    string user;
+    string content;
+    Color3 usercolor;
+};
+class UserMessageWidget : public Fl_Widget {
+    public:
+        
+        Message message;
+
+        UserMessageWidget(int x, int y, int w, int h, Message msg) 
+            : Fl_Widget(x,y,w,h), message(msg)
+        {
+            box(FL_NO_BOX);
+        };
+
+        void draw() override {
+
+            fl_color(message.usercolor.r, message.usercolor.g, message.usercolor.b);
+            fl_draw(message.user.c_str(), x(), y());
+            
+            fl_color(FL_BLACK);
+            fl_draw(message.content.c_str(), x()+fl_width(message.user.c_str()), y());
+
+        };
+};
+
+*/
+
+int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox, Fl_Pack* MessagePack, string ADDRESS, string PORT){
     std::cout << "netthread started\n" << std::flush;
 
     WSADATA wsadata;
@@ -247,7 +318,7 @@ int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox, Fl_Scroll* Ch
 
     while (true) {
         std::string recvResult = RecieveData(&TalkSocket);
-        AddNewMessage(recvResult, ChatScroll);
+        AddNewMessage(recvResult, MessagePack);
     };
 
     WSACleanup();
@@ -282,28 +353,16 @@ class RoomDisplayWidget : public Fl_Widget {
             fl_draw(addrinfotext.c_str(), x()+5, y()+h()-fl_height()-5);
         };
 
+
 };
 
-class UserMessageWidget : public Fl_Widget {
-    public:
-        
-        Message message;
-
-        UserMessageWidget(int x, int y, int w, int h, Message msg) 
-            : Fl_Widget(x,y,w,h), message(msg)
-        {
-            box(FL_NO_BOX);
+void windowCloseCallback(Fl_Widget* Widget, void* data) {
+    Widget->hide();
+    for (auto& connection : roomaddressthreads) {
+        if (connection.joinable()) {
+            connection.join();
         };
-
-        void draw() override {
-
-            fl_color(message.usercolor.r, message.usercolor.g, message.usercolor.b);
-            fl_draw(message.user.c_str(), x(), y());
-            
-            fl_color(FL_BLACK);
-            fl_draw(message.content.c_str(), x()+fl_width(message.user.c_str()), y());
-
-        };
+    };
 };
 
 int main(int argc, char** argv) {
@@ -314,8 +373,8 @@ int main(int argc, char** argv) {
 
     vector<TalkAddressInfo> RoomAddresses = { //example data
        TalkAddressInfo {
-         "http://localhost",
-        "3000",
+        "hb930.duckdns.org",
+        "930",
         "cool example room",
         5,
         {"bob", "baller", "hb"},
@@ -326,7 +385,7 @@ int main(int argc, char** argv) {
                 {80, 150, 255}
             },
             {
-                "eric",
+                "hb",
                 "hahhahah i made you endure this torture",
                 {80, 150, 255}
             },
@@ -339,13 +398,14 @@ int main(int argc, char** argv) {
 
        }
     };
-    vector<std::thread> roomaddressthreads;
 
     //RoomAddresses contain a TalkAddressInfo
     //Start a new thread for each TalkAddressInfo
     //and if one socket disconnects, make sure the whole client doesnt screw up because one died of many
 
     Fl_Window *TalkFLTKWindow = new Fl_Window(800,500);
+
+    TalkFLTKWindow->callback(windowCloseCallback);
 
     Fl_Group* Rooms = new Fl_Group(10,40,150,450, "Enlisted Rooms");
     Rooms->end();
@@ -398,12 +458,12 @@ int main(int argc, char** argv) {
     TalkFLTKWindow->end();
     TalkFLTKWindow->show(argc, argv);
 
-    AddNewMessage("balls", ChatScroll);
+    AddNewMessage("balls", TextBoxText);
 
     //start looping thread
 
     for (const auto& add : RoomAddresses) {
-        std::thread addrthreadgen(networkThread, TextBoxSend, TextBox, ChatScroll, add.AddressLabel, add.Port);
+        std::thread addrthreadgen(networkThread, TextBoxSend, TextBox, TextBoxText, add.AddressLabel, add.Port);
         roomaddressthreads.push_back(std::move(addrthreadgen));
     };
 

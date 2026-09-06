@@ -1,31 +1,17 @@
 [2026-09-05 22:40:52.861][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Output Name: Talk++be.exe[0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m [0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m Additional: [0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m                [1;38;5;40;49m[1mInclude Directories[0m        [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
-
 [2026-09-05 22:40:52.864][0;38;5;11;49m[1m[info][0m ├─serverNetwork.cpp      ├─                         ├─                         ├─ws2_32                  [0m
-
 [2026-09-05 22:40:52.865][0;38;5;11;49m[1m[info][0m [0m
-
 [2026-09-05 22:40:52.865][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\backend\server.cpp D:\Projects\TalkProject\talk++dev\src\backend\serverNetwork.cpp -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe[0m
-
 [2026-09-05 22:41:01.441][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;46;49msuccess[0m
-
 [2026-09-05 22:43:31.873][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
 [2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
 [2026-09-05 22:43:31.876][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
@@ -71,3 +57,208 @@
 [2026-09-05 22:44:51.720][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\backend\server.cpp D:\Projects\TalkProject\talk++dev\src\backend\serverNetwork.cpp -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe[0m
 [2026-09-05 22:44:55.883][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;46;49msuccess[0m
 [2026-09-05 22:44:55.883][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
+[2026-09-05 23:02:31.001][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m Build Name: Backend Build[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m Build Description: Talk++ build for backend[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m Build Suffix: b[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m Output Name: Talk++be.exe[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m                [1;38;5;40;49m[1mInclude Directories[0m        [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-05 23:02:31.004][0;38;5;11;49m[1m[info][0m ├─serverNetwork.cpp      ├─                         ├─                         ├─ws2_32                  [0m
+[2026-09-05 23:02:31.005][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-05 23:02:31.005][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\backend\server.cpp D:\Projects\TalkProject\talk++dev\src\backend\serverNetwork.cpp -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++be.exe[0m
+[2026-09-05 23:02:40.379][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;46;49msuccess[0m
+[2026-09-05 23:02:40.379][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
+[2026-09-06 10:17:04.658][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-06 10:17:04.670][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-06 10:17:04.670][0;38;5;11;49m[1m[info][0m Build Name: Frontend Build[0m
+[2026-09-06 10:17:04.670][0;38;5;11;49m[1m[info][0m Build Description: Talk++ build for frontend[0m
+[2026-09-06 10:17:04.670][0;38;5;11;49m[1m[info][0m Build Suffix: f[0m
+[2026-09-06 10:17:04.670][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 10:17:04.670][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-06 10:17:04.670][0;38;5;11;49m[1m[info][0m Output Name: Talk++fe.exe[0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m        [1;38;5;40;49m[1mInclude Directories[0m            [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m ├─               ├─C:\gcclibs\fltk\include      ├─C:\gcclibs\fltk\lib      ├─fltk                    [0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_images             [0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_png                [0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_z                  [0m
+[2026-09-06 10:17:04.671][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comctl32                [0m
+[2026-09-06 10:17:04.672][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdi32                   [0m
+[2026-09-06 10:17:04.672][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdiplus                 [0m
+[2026-09-06 10:17:04.672][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comdlg32                [0m
+[2026-09-06 10:17:04.672][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─user32                  [0m
+[2026-09-06 10:17:04.672][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ole32                   [0m
+[2026-09-06 10:17:04.672][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─uuid                    [0m
+[2026-09-06 10:17:04.672][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─winspool                [0m
+[2026-09-06 10:17:04.672][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ws2_32                  [0m
+[2026-09-06 10:17:04.672][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 10:17:04.672][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\frontend\cli.cpp -IC:\gcclibs\fltk\include -LC:\gcclibs\fltk\lib -lfltk -lfltk_images -lfltk_png -lfltk_z -lcomctl32 -lgdi32 -lgdiplus -lcomdlg32 -luser32 -lole32 -luuid -lwinspool -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe[0m
+[2026-09-06 10:26:00.970][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;196;49mfailure[0m
+[2026-09-06 10:26:00.970][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
+[2026-09-06 10:39:46.231][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-06 10:39:46.233][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-06 10:39:46.234][0;38;5;11;49m[1m[info][0m Build Name: Frontend Build[0m
+[2026-09-06 10:39:46.234][0;38;5;11;49m[1m[info][0m Build Description: Talk++ build for frontend[0m
+[2026-09-06 10:39:46.234][0;38;5;11;49m[1m[info][0m Build Suffix: f[0m
+[2026-09-06 10:39:46.234][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 10:39:46.234][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-06 10:39:46.234][0;38;5;11;49m[1m[info][0m Output Name: Talk++fe.exe[0m
+[2026-09-06 10:39:46.234][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-06 10:39:46.234][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m        [1;38;5;40;49m[1mInclude Directories[0m            [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m ├─               ├─C:\gcclibs\fltk\include      ├─C:\gcclibs\fltk\lib      ├─fltk                    [0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_images             [0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_png                [0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_z                  [0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comctl32                [0m
+[2026-09-06 10:39:46.235][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdi32                   [0m
+[2026-09-06 10:39:46.236][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdiplus                 [0m
+[2026-09-06 10:39:46.236][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comdlg32                [0m
+[2026-09-06 10:39:46.236][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─user32                  [0m
+[2026-09-06 10:39:46.236][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ole32                   [0m
+[2026-09-06 10:39:46.236][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─uuid                    [0m
+[2026-09-06 10:39:46.236][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─winspool                [0m
+[2026-09-06 10:39:46.236][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ws2_32                  [0m
+[2026-09-06 10:39:46.236][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 10:39:46.236][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\frontend\cli.cpp -IC:\gcclibs\fltk\include -LC:\gcclibs\fltk\lib -lfltk -lfltk_images -lfltk_png -lfltk_z -lcomctl32 -lgdi32 -lgdiplus -lcomdlg32 -luser32 -lole32 -luuid -lwinspool -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe[0m
+[2026-09-06 10:39:59.371][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;196;49mfailure[0m
+[2026-09-06 10:39:59.371][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
+[2026-09-06 10:40:43.521][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-06 10:40:43.524][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-06 10:40:43.524][0;38;5;11;49m[1m[info][0m Build Name: Frontend Build[0m
+[2026-09-06 10:40:43.524][0;38;5;11;49m[1m[info][0m Build Description: Talk++ build for frontend[0m
+[2026-09-06 10:40:43.524][0;38;5;11;49m[1m[info][0m Build Suffix: f[0m
+[2026-09-06 10:40:43.524][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 10:40:43.524][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m Output Name: Talk++fe.exe[0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m        [1;38;5;40;49m[1mInclude Directories[0m            [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m ├─               ├─C:\gcclibs\fltk\include      ├─C:\gcclibs\fltk\lib      ├─fltk                    [0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_images             [0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_png                [0m
+[2026-09-06 10:40:43.525][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_z                  [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comctl32                [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdi32                   [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdiplus                 [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comdlg32                [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─user32                  [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ole32                   [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─uuid                    [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─winspool                [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ws2_32                  [0m
+[2026-09-06 10:40:43.526][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 10:40:43.526][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\frontend\cli.cpp -IC:\gcclibs\fltk\include -LC:\gcclibs\fltk\lib -lfltk -lfltk_images -lfltk_png -lfltk_z -lcomctl32 -lgdi32 -lgdiplus -lcomdlg32 -luser32 -lole32 -luuid -lwinspool -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe[0m
+[2026-09-06 10:40:52.472][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;196;49mfailure[0m
+[2026-09-06 10:40:52.472][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
+[2026-09-06 11:24:23.137][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m Build Name: Frontend Build[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m Build Description: Talk++ build for frontend[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m Build Suffix: f[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m Output Name: Talk++fe.exe[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m        [1;38;5;40;49m[1mInclude Directories[0m            [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m ├─               ├─C:\gcclibs\fltk\include      ├─C:\gcclibs\fltk\lib      ├─fltk                    [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_images             [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_png                [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_z                  [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comctl32                [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdi32                   [0m
+[2026-09-06 11:24:23.140][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdiplus                 [0m
+[2026-09-06 11:24:23.141][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comdlg32                [0m
+[2026-09-06 11:24:23.141][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─user32                  [0m
+[2026-09-06 11:24:23.141][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ole32                   [0m
+[2026-09-06 11:24:23.141][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─uuid                    [0m
+[2026-09-06 11:24:23.141][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─winspool                [0m
+[2026-09-06 11:24:23.141][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ws2_32                  [0m
+[2026-09-06 11:24:23.141][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 11:24:23.141][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\frontend\cli.cpp -IC:\gcclibs\fltk\include -LC:\gcclibs\fltk\lib -lfltk -lfltk_images -lfltk_png -lfltk_z -lcomctl32 -lgdi32 -lgdiplus -lcomdlg32 -luser32 -lole32 -luuid -lwinspool -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe[0m
+[2026-09-06 11:24:32.918][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;196;49mfailure[0m
+[2026-09-06 11:24:32.918][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
+[2026-09-06 11:28:28.997][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-06 11:28:29.000][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-06 11:28:29.000][0;38;5;11;49m[1m[info][0m Build Name: Frontend Build[0m
+[2026-09-06 11:28:29.000][0;38;5;11;49m[1m[info][0m Build Description: Talk++ build for frontend[0m
+[2026-09-06 11:28:29.000][0;38;5;11;49m[1m[info][0m Build Suffix: f[0m
+[2026-09-06 11:28:29.000][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 11:28:29.000][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-06 11:28:29.000][0;38;5;11;49m[1m[info][0m Output Name: Talk++fe.exe[0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m        [1;38;5;40;49m[1mInclude Directories[0m            [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─C:\gcclibs\fltk\include      ├─C:\gcclibs\fltk\lib      ├─fltk                    [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_images             [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_png                [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_z                  [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comctl32                [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdi32                   [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdiplus                 [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comdlg32                [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─user32                  [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ole32                   [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─uuid                    [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─winspool                [0m
+[2026-09-06 11:28:29.001][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ws2_32                  [0m
+[2026-09-06 11:28:29.002][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 11:28:29.002][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\frontend\cli.cpp -IC:\gcclibs\fltk\include -LC:\gcclibs\fltk\lib -lfltk -lfltk_images -lfltk_png -lfltk_z -lcomctl32 -lgdi32 -lgdiplus -lcomdlg32 -luser32 -lole32 -luuid -lwinspool -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe[0m
+[2026-09-06 11:28:33.299][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;46;49msuccess[0m
+[2026-09-06 11:28:33.299][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
+[2026-09-06 11:31:08.346][0;38;5;196;49m[1m[buildtpp][0m Starting build...[0m
+[2026-09-06 11:31:08.348][0;38;5;11;49m[1m[info][0m ------------BUILD INFORMATION------------[0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m Build Name: Frontend Build[0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m Build Description: Talk++ build for frontend[0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m Build Suffix: f[0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m Build Directory: D:\Projects\TalkProject\talk++dev[0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m Output Name: Talk++fe.exe[0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m Output Executable Directory: D:\Projects\TalkProject\talk++dev\build\compiled\[0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m Output Build Logs Directory: D:\Projects\TalkProject\talk++dev\build\.build_logs[0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m Output Build Count Directory: D:\Projects\TalkProject\talk++dev\build\.build_count[0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m Additional: [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m [0;38;5;196;49m[1mC++ Files[0m        [1;38;5;40;49m[1mInclude Directories[0m            [0;38;5;21;49m[1mLibrary Directories[0m        [0;38;5;129;49m[1mSpecific Libraries[0m        [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m ├─               ├─C:\gcclibs\fltk\include      ├─C:\gcclibs\fltk\lib      ├─fltk                    [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_images             [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_png                [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─fltk_z                  [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comctl32                [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdi32                   [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─gdiplus                 [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─comdlg32                [0m
+[2026-09-06 11:31:08.349][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─user32                  [0m
+[2026-09-06 11:31:08.350][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ole32                   [0m
+[2026-09-06 11:31:08.350][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─uuid                    [0m
+[2026-09-06 11:31:08.350][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─winspool                [0m
+[2026-09-06 11:31:08.350][0;38;5;11;49m[1m[info][0m ├─               ├─                             ├─                         ├─ws2_32                  [0m
+[2026-09-06 11:31:08.350][0;38;5;11;49m[1m[info][0m [0m
+[2026-09-06 11:31:08.350][0;38;5;196;49m[1m[buildtpp][0m Compiling and running: [0;38;5;208;49m[1mg++ -std=c++23 -Wall -O2 D:\Projects\TalkProject\talk++dev\src\frontend\cli.cpp -IC:\gcclibs\fltk\include -LC:\gcclibs\fltk\lib -lfltk -lfltk_images -lfltk_png -lfltk_z -lcomctl32 -lgdi32 -lgdiplus -lcomdlg32 -luser32 -lole32 -luuid -lwinspool -lws2_32 -o D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe && D:\Projects\TalkProject\talk++dev\build\compiled\Talk++fe.exe[0m
+[2026-09-06 11:31:31.248][0;38;5;196;49m[1m[buildtpp][0m build [1;38;5;46;49msuccess[0m
+[2026-09-06 11:31:31.248][0;38;5;201;49m[1m[buildpost][0m writing to .build_count recent build...[0m
