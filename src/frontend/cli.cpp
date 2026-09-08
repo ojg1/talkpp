@@ -1,4 +1,4 @@
-//C++ Headers
+//------------C++ Headers------------
 
 #include <iostream>
 #include <unordered_map>
@@ -6,18 +6,18 @@
 #include <string>
 #include <chrono> 
 
-//Windows Headers with Networking
+//------------Windows Headers with Networking------------
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>
 #define DEFAULT_ADDR "hb930.duckdns.org"
 #define DEFAULT_PORT "930"
 
-//Threading
+//------------Threading------------
 #include <thread>
 #include <mutex>
 
-//FLTK
+//------------FLTK------------
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Group.H>
@@ -31,17 +31,19 @@
 #include <FL/Fl_Output.H>
 #include <FL/fl_draw.H>
 
+//------------using------------
 using std::string;
 using std::vector;
 using std::unordered_map;
 
 vector<std::thread> roomaddressthreads;
 
-//util
+//------------Utilities------------
 void plog(string ansi, string header, string message){
     std::cout << ansi << "[" << header << "]\x1b[0m" << message << "\x1b[0m\n";
 };
 
+//------------Struct------------
 struct cbckd {
     Fl_Input* TextBox;
     SOCKET* ClientSocket;
@@ -66,7 +68,12 @@ struct TalkAddressInfo {
     vector<Message> Messages;
 };
 
-//Functions
+struct AwakeData {
+    Message ucont;
+    Fl_Pack* pack;
+};
+
+//------------Network Functions------------
 string RecieveData(SOCKET *Client) {
     std::string result;
     char chunk[1024] = {0};
@@ -147,29 +154,117 @@ string SendData(SOCKET* ClientSocket, string message) {
     return err ? "failure" : "success";
 }
 
+//------------Custom Widgets------------
+
+//helper func:
+
+struct WidthLns {
+    int lns;
+    std::vector<std::string> content;
+};
+std::vector<std::string> GetWidthOffLines(std::string ln, int w) {
+    int cwidth = 0;
+    int lines = 1;
+
+    std::vector<std::string> cont = {};
+    std::vector<char> chars(ln.begin(), ln.end());
+
+    int start = 0;
+    int end = 0;
+
+    for (int i = 0; i < chars.size(); i++) {
+        cwidth += fl_width(chars[i]);
+        if (cwidth >= w) {
+            end = i - 1;
+            cont.push_back(ln.substr(start, end - start));
+            start = i;
+            cwidth = 0;
+        };
+    };
+
+    cont.push_back(ln.substr(start, chars.size() - start)); 
+    return cont; 
+};
+
 class UserMessageWidget : public Fl_Widget {
     public:
         
         Message message;
+        std::vector<std::string> calcHeight;
+        bool wrapped = false;
 
-        UserMessageWidget(int x, int y, int w, int h, Message msg) 
-            : Fl_Widget(x,y,w,h), message(msg)
+        UserMessageWidget(int x, int y, int w, Message msg) 
+            : Fl_Widget(x,y,w, 16), message(msg)
         {
             box(FL_NO_BOX);
         };
 
         void draw() override {
 
-            fl_color(message.usercolor.r, message.usercolor.g, message.usercolor.b);
-            fl_draw(message.user.c_str(), x(), y());
-            
-            fl_color(FL_BLACK);
-            fl_draw(message.content.c_str(), x()+fl_width(message.user.c_str()), y());
+            fl_font(FL_HELVETICA, 16);
 
+            if (!wrapped) {
+                calcHeight = GetWidthOffLines(message.content, w());
+                int newH = static_cast<int>(calcHeight.size()) * 16;
+                if (newH != h()) {
+                    size(w(), newH);
+                    if (parent()) parent()->init_sizes(); 
+                }
+                wrapped = true;
+            }
+
+            int baseline = y() + h(); // leave a little padding from the bottom
+            //draw username
+            fl_font(FL_HELVETICA_BOLD, 16);
+            fl_color(message.usercolor.r, message.usercolor.g, message.usercolor.b);
+            fl_draw(message.user.c_str(), x() + 2, baseline);
+
+            //draw content
+            fl_font(FL_HELVETICA, 16);
+            fl_color(FL_BLACK);
+
+            for (int i = 0; i < calcHeight.size(); i++) {
+                if (i == 0) {
+                    fl_draw(message.content.c_str(), x() + 4 + fl_width(message.user.c_str()) + 5, baseline);
+                } else {
+                    fl_draw(message.content.c_str(), x() + 4, baseline*16);
+                }
+            }
+            
         };
 };
 
+class RoomDisplayWidget : public Fl_Widget {
+    public:
 
+        TalkAddressInfo addressinfo;
+
+        RoomDisplayWidget(int x, int y, int w, int h, TalkAddressInfo addressinfo)
+            : Fl_Widget(x,y,w,h), addressinfo(addressinfo)
+        {
+            box(FL_PLASTIC_DOWN_BOX);
+        };
+
+        void draw() override {
+            //Show Room Label
+            fl_color(FL_BLACK);
+            fl_draw(addressinfo.RoomName.c_str(), x(), y());
+
+            //Show MembersW
+            fl_color(FL_GRAY);
+            string meminfo = std::to_string(addressinfo.Members.size()) + "/" + std::to_string(addressinfo.maxMembers);
+            fl_draw(meminfo.c_str(),x()+w()-fl_width(meminfo.c_str())-5, y()+h()-fl_height()-5);
+            
+            //Show Address and Port
+            fl_color(FL_GRAY);
+            string addrinfotext = addressinfo.AddressLabel + ":" + addressinfo.Port;
+            fl_draw(addrinfotext.c_str(), x()+5, y()+h()-fl_height()-5);
+        };
+
+
+};
+
+//------------Other Functions------------
 void SendDataCallback(Fl_Widget* widget, void* data) {
     cbckd* callback = static_cast<cbckd*>(data);
     const char* val = callback->TextBox->value();
@@ -189,69 +284,55 @@ void CreateNewRoomCallback(Fl_Widget* widget, void* data) {
     }
 };
 
-void AddNewMessage(const std::string& message, Fl_Pack* MessagePack) {
+void AddNewMessage(const Message ucont, Fl_Pack* MessagePack) {
+    std::cout << "AddNewMessage: start\n" << std::flush;
 
     int widgetWidth = MessagePack->w();
-    int widgetHeight = 30;
+    std::cout << "AddNewMessage: got width " << widgetWidth << "\n" << std::flush;
 
     UserMessageWidget* msgWidget = new UserMessageWidget(
-        0,
-        0,
-        widgetWidth,
-        widgetHeight,
-        Message{
-            "baller",
-            message,
-            Color3{255, 255, 25}
-        }
+        0, 0, widgetWidth, ucont
     );
+    std::cout << "AddNewMessage: widget constructed\n" << std::flush;
 
-    msgWidget->draw();
+    if (msgWidget->w() > MessagePack->w()) {
+        std::cout << "well thats a problem for another time!";
+    };
 
     MessagePack->add(msgWidget);
+    std::cout << "AddNewMessage: added to pack\n" << std::flush;
 
     MessagePack->init_sizes();
+    std::cout << "AddNewMessage: init_sizes done\n" << std::flush;
 
     MessagePack->redraw();
+    std::cout << "AddNewMessage: redraw called\n" << std::flush;
 
     if (MessagePack->parent()) {
         MessagePack->parent()->redraw();
     };
-};
-/*
-reference
-
-struct Message {
-    string user;
-    string content;
-    Color3 usercolor;
-};
-class UserMessageWidget : public Fl_Widget {
-    public:
-        
-        Message message;
-
-        UserMessageWidget(int x, int y, int w, int h, Message msg) 
-            : Fl_Widget(x,y,w,h), message(msg)
-        {
-            box(FL_NO_BOX);
-        };
-
-        void draw() override {
-
-            fl_color(message.usercolor.r, message.usercolor.g, message.usercolor.b);
-            fl_draw(message.user.c_str(), x(), y());
-            
-            fl_color(FL_BLACK);
-            fl_draw(message.content.c_str(), x()+fl_width(message.user.c_str()), y());
-
-        };
+    std::cout << "AddNewMessage: done\n" << std::flush;
 };
 
-*/
+
+void HandleIncomingMessage(void* data) {
+    AwakeData* awakeData = static_cast<AwakeData*>(data);
+
+    AddNewMessage(awakeData->ucont, awakeData->pack);
+
+    delete awakeData; // we made this with 'new', so we clean it up here
+}
+
+void QueueMessage(Message message, Fl_Pack* pack) {
+    AwakeData* data = new AwakeData;
+    data->ucont = message;
+    data->pack = pack;
+
+    Fl::awake(HandleIncomingMessage, data);
+}; 
 
 int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox, Fl_Pack* MessagePack, string ADDRESS, string PORT){
-    std::cout << "netthread started\n" << std::flush;
+    std::cout << "netthread started \n" << std::flush;
 
     WSADATA wsadata;
     int StartupStatus = WSAStartup(MAKEWORD(2,2), &wsadata);
@@ -318,42 +399,25 @@ int networkThread(Fl_Return_Button* SendButton, Fl_Input* TextBox, Fl_Pack* Mess
 
     while (true) {
         std::string recvResult = RecieveData(&TalkSocket);
-        AddNewMessage(recvResult, MessagePack);
+
+        // temp data
+        Message preucont = {};
+        preucont.content = recvResult;
+        preucont.user = "Anonymous";
+        preucont.usercolor = {0,0,0};
+
+        // AddNewMessage(preucont, MessagePack);
+        // AwakeData* dataToSend = new AwakeData;
+        // dataToSend->ucont = preucont;
+        // dataToSend->pack = MessagePack;
+
+        // Fl::awake(HandleIncomingMessage, dataToSend);
+        QueueMessage(preucont, MessagePack);
     };
 
     WSACleanup();
 
     return 0;
-};
-
-class RoomDisplayWidget : public Fl_Widget {
-    public:
-
-        TalkAddressInfo addressinfo;
-
-        RoomDisplayWidget(int x, int y, int w, int h, TalkAddressInfo addressinfo)
-            : Fl_Widget(x,y,w,h), addressinfo(addressinfo)
-        {
-            box(FL_PLASTIC_DOWN_BOX);
-        };
-
-        void draw() override {
-            //Show Room Label
-            fl_color(FL_BLACK);
-            fl_draw(addressinfo.RoomName.c_str(), x(), y());
-
-            //Show MembersW
-            fl_color(FL_GRAY);
-            string meminfo = std::to_string(addressinfo.Members.size()) + "/" + std::to_string(addressinfo.maxMembers);
-            fl_draw(meminfo.c_str(),x()+w()-fl_width(meminfo.c_str())-5, y()+h()-fl_height()-5);
-            
-            //Show Address and Port
-            fl_color(FL_GRAY);
-            string addrinfotext = addressinfo.AddressLabel + ":" + addressinfo.Port;
-            fl_draw(addrinfotext.c_str(), x()+5, y()+h()-fl_height()-5);
-        };
-
-
 };
 
 void windowCloseCallback(Fl_Widget* Widget, void* data) {
@@ -365,11 +429,105 @@ void windowCloseCallback(Fl_Widget* Widget, void* data) {
     };
 };
 
+//------------my fun testing------------
+
+void SendAll(Fl_Pack* testpack, std::string line) {
+    Color3 j = {255,0,0};
+    Color3 z = {0,0,255};
+    Color3 r = {255,255,0};
+
+    QueueMessage({"Joe", line, j}, testpack);
+    QueueMessage({"Zubin", line, z}, testpack);
+    QueueMessage({"Rob", line, r}, testpack);
+
+};
+
+void Ruler(Fl_Pack* testpack) {
+    Color3 j = {255,0,0};
+
+    QueueMessage({"Joe", "JUNO WAS MAD, HE KNEW HE'D BEEN HAD", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "SO HE SHOT AT THE SUN WITH A GUN", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "SHOT AT THE SUN WITH A GUN", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "SHOT AT HIS WILY ONE, ONLY FRIEND", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    QueueMessage({"Joe", "YOU UNDERSTAND MECHANICAL HANDS", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "ARE THE RULER OF EVERYTHING", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "RULER OF EVERYTHING", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "I'M THE RULER OF EVERYTHING IN THE END", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    Color3 z = {0,0,255};
+
+    QueueMessage({"Zubin", "DO YOU LIKE HOW I DANCE? I'VE GOT ZIRCONIUM PANTS", z}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "CONSEQUENTIAL ENOUGH TO SLIP YOU INTO A TRANCE", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Zubin", "DO YOU LIKE HOW I WALK? DO YOU LIKE HOW I TALK?", z}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "DO YOU LIKE HOW MY FACE DISINTEGRATES INTO CHALK?", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Zubin", "I HAVE A WONDERFUL WIFE, I HAVE A POWERFUL JOB", z}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Zubin", "SHE CRITICIZES ME FOR BEING EGOCENTRIC", z}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "YOU PRACTICE YOUR MANNERISMS INTO THE WALL", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Zubin", "IF THIS MIRROR WERE CLEAR, I'D BE STANDING SO TALL", z}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    Color3 r = {255,255,0};
+
+    QueueMessage({"Zubin", "I WAS OBSERVING THE BIRDS", z}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "CIRCLE IN FOR THE KILL", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Rob", "CIRCLE IN FOR THE KILL", r}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    QueueMessage({"Joe", "I'VE BEEN YOU, I KNOW YOU, YOUR FACADE IS A SCAM", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Zubin", "YOU KNOW YOU'RE MAKING ME CRY, THIS IS THE WAY THAT I AM", z}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Zubin", "I'VE BEEN LIVING A LIE, A METAMORPHICAL SCHEME", z}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    QueueMessage({"Joe", "DETECTIVE UNDERCOVER, BROTHERHOOD, OBJECTIVE, OBSCENE", j}, testpack);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    std::vector<std::string> mainmono = {
+        "DO YOU HEAR THE FLIBBITY JIBBITY JIBBER JABBER",
+        "WITH AN, \"OH MY GOD, I'VE GOT TO GET OUT OF HERE OR I'LL HAVE ANOTHER",
+        "WORD TO SELL, ANOTHER STORY TO TELL",
+        "ANOTHER TIME PIECE RINGING THE BELL\"",
+        "DO YOU HEAR THE CLOCK STOP WHEN YOU REACH THE END?",
+        "NO, YOU KNOW IT MUST BE NEVER ENDING, COMPREHEND IF YOU CAN",
+        "BUT WHEN YOU TRY TO PRETEND TO UNDERSTAND",
+        "YOU RESEMBLE A FOOL, ALTHOUGH YOU'RE ONLY A MAN",
+        "SO GIVE IT UP AND SMILE"
+    };
+
+    for (const auto& ln : mainmono) {
+        SendAll(testpack, ln);
+        std::this_thread::sleep_for(std::chrono::milliseconds(250));
+    };
+
+};
+
+//main
 int main(int argc, char** argv) {
-//   string user;
-//   string content;
-//   Color3 usercolor;
-//;
+    //   string user;
+    //   string content;
+    //   Color3 usercolor;
+    //;
+
+    Fl::lock();
+
 
     vector<TalkAddressInfo> RoomAddresses = { //example data
        TalkAddressInfo {
@@ -398,10 +556,6 @@ int main(int argc, char** argv) {
 
        }
     };
-
-    //RoomAddresses contain a TalkAddressInfo
-    //Start a new thread for each TalkAddressInfo
-    //and if one socket disconnects, make sure the whole client doesnt screw up because one died of many
 
     Fl_Window *TalkFLTKWindow = new Fl_Window(800,500);
 
@@ -438,12 +592,8 @@ int main(int argc, char** argv) {
         ChatScroll->begin();
             Fl_Pack* TextBoxText = new Fl_Pack(MainChat->x()+10,MainChat->y()+10, 480, 400);
             TextBoxText->type(Fl_Pack::VERTICAL);
+            TextBoxText->box(FL_PLASTIC_UP_BOX); 
             TextBoxText->spacing(5); 
-            TextBoxText->begin();
-                
-                
-
-            TextBoxText->end();
         ChatScroll->end();
     MainChat->end();    
 
@@ -452,13 +602,28 @@ int main(int argc, char** argv) {
     notifier->color(FL_GREEN);
     notifier->labelsize(18);    
 
-    Fl_PNG_Image* icon = new Fl_PNG_Image("assets/talk.png");
-    TalkFLTKWindow->icon(icon);
+    // Fl_PNG_Image* icon = new Fl_PNG_Image("assets/talk.png");
+    // TalkFLTKWindow->icon(icon);
+    
 
     TalkFLTKWindow->end();
     TalkFLTKWindow->show(argc, argv);
 
-    AddNewMessage("balls", TextBoxText);
+    Message PersonA = {};
+    PersonA.user = "A";
+    PersonA.content = "test";
+    PersonA.usercolor = {0,200,0};
+    
+    Message PersonB = {};
+    PersonB.user = "B";
+    PersonB.content = "test";
+    PersonB.usercolor = {0,130,0};
+
+
+    QueueMessage(PersonA, TextBoxText);
+    QueueMessage(PersonB, TextBoxText);
+    
+    std::thread testrender(Ruler, TextBoxText);
 
     //start looping thread
 
@@ -466,6 +631,8 @@ int main(int argc, char** argv) {
         std::thread addrthreadgen(networkThread, TextBoxSend, TextBox, TextBoxText, add.AddressLabel, add.Port);
         roomaddressthreads.push_back(std::move(addrthreadgen));
     };
+
+    std::cout<<"test\n";
 
     Fl::run();
 

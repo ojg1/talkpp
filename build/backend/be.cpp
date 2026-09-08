@@ -267,10 +267,9 @@ int main() {
         auto local = std::chrono::zoned_time{"America/New_York", now};
         std::string time = std::format("{:%H%M%S%m%d%y}", local);
         buildclog += time;
+        buildclog += BuildLogSuffix;
 
         writetofilesingle(outputBuildCountFile, buildclog);
-
-        buildclog += BuildLogSuffix;
     };
 
     writetofilelogvec(outputBuildLogFile);
