@@ -213,7 +213,7 @@ int main() {
 
 
     std::string bd = BuildDirectory;
-    std::string finalstr = "g++ -std=c++23 -Wall -O2 ";
+    std::string finalstr = "g++ -std=c++23 -Wall -Wextra -Werror=return-type -O2 ";
 
     finalstr += bd + "\\src\\frontend\\" + mainCompile + " ";
 
@@ -257,7 +257,7 @@ int main() {
 
     plog((std::string)plogRED+(std::string)plogBOLD, "buildtpp", "Compiling and running: " + (std::string)plogORANGE+(std::string)plogBOLD + finalstr);
     int status = std::system(finalstr.c_str());
-
+    plog((std::string)plogRED+(std::string)plogBOLD, "buildtpp", "errno: " + std::to_string(status));
     if (status == 0) {
         plog((std::string)plogRED+(std::string)plogBOLD, "buildtpp", "build \x1b[1;38;5;46;49msuccess");
     } else {
@@ -279,10 +279,10 @@ int main() {
         auto local = std::chrono::zoned_time{"America/New_York", now};
         std::string time = std::format("{:%H%M%S%m%d%y}", local);
         buildclog += time;
+        buildclog += BuildLogSuffix;
 
         writetofilesingle(outputBuildCountFile, buildclog);
 
-        buildclog += BuildLogSuffix;
     };
 
     writetofilelogvec(outputBuildLogFile);
